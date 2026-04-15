@@ -7,16 +7,58 @@
     body {
       font-family: Arial;
       text-align: center;
-      padding: 40px;
+      padding: 40px 20px;
+      background-color: #f0f4ff;
+      color: #1a1a2e;
+      box-sizing: border-box;
+    }
+    h1 {
+      color: #4a3f8f;
     }
     button {
       font-size: 20px;
       padding: 15px 25px;
       margin-top: 20px;
+      background-color: #4a3f8f;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 400px;
+    }
+    button:hover {
+      background-color: #6b5ebd;
     }
     .card {
       margin-top: 30px;
       font-size: 24px;
+      background-color: #ffffff;
+      border: 2px solid #c5b8f5;
+      border-radius: 12px;
+      padding: 30px 20px;
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      box-sizing: border-box;
+      box-shadow: 0 4px 12px rgba(74, 63, 143, 0.15);
+    }
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 22px;
+      }
+      .card {
+        font-size: 20px;
+        padding: 20px 15px;
+      }
+      button {
+        font-size: 18px;
+      }
+    }
+    b {
+      color: #4a3f8f;
     }
   </style>
 </head>
@@ -30,16 +72,18 @@
 
 <script>
 const verbs = ["to eat", "to go", "to see", "to do", "to speak", "to run", "to laugh", "to come"];
+
 const persons = [
-  "I (1st singular)",
-  "You informal (2nd singular)",
-  "You formal (2nd plural)",
-  "You all (2nd plural)",
-  "He/She (3rd singular)",
-  "We includsive (1st plural)",
-  "We exclusive (1st plural)",
-  "They (3rd plural)"
+  "I",
+  "You (informal)",
+  "You (formal)",
+  "You all",
+  "He",
+  "She",
+  "We",
+  "They"
 ];
+
 const tenses = ["Present", "Past", "Future"];
 
 function random(arr) {
@@ -52,10 +96,10 @@ function generate() {
   const tense = random(tenses);
 
   document.getElementById("output").innerHTML =
-    `Say: <br><br>
-     <b>${person}</b><br>
-     <b>${tense} tense</b><br>
-     Verb: <b>${verb}</b>`;
+    `Say in Gujarati:<br><br>
+    Pronoun: <b>${person}</b><br><br>
+    Tense: <b>${tense}</b><br><br>
+    Verb: <b>${verb}</b>`;
 }
 </script>
 
