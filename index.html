@@ -109,7 +109,10 @@
   <h1>Gujarati Speaking Drill</h1>
   <button onclick="generate()">Generate Prompt</button>
   <div class="card" id="output"></div>
-  <button id="showPronounsBtn" class="secondary-btn" onclick="showScreen('pronounScreen')" style="display:none;">Show Pronouns Table</button>
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+    <button id="showPronounsBtn" class="secondary-btn" onclick="showScreen('pronounScreen')" style="display:none;">Show Pronouns Table</button>
+    <button id="showConjugationsBtn" class="secondary-btn" onclick="showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
+  </div>
 </div>
 
 <div id="pronounScreen" class="screen">
@@ -128,10 +131,17 @@
       <tr><td>You all</td><td>Tame / Tame badhā</td></tr>
       <tr><td>He / She</td><td>E</td></tr>
       <tr><td>We (exclusive)</td><td>Ame</td></tr>
-      <tr><td>We (inclusive)</td><td>Āpaḍe</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
       <tr><td>They</td><td>E badhā</td></tr>
     </tbody>
   </table>
+  <button class="secondary-btn" onclick="showScreen('mainScreen')">← Back</button>
+</div>
+
+<div id="conjugationsScreen" class="screen">
+  <h1 id="conjugationsTitle">Conjugations</h1>
+  <p id="conjugationsExampleVerb" style="font-size:18px; color:#4a3f8f; margin: 0 0 4px;">Example verb: <b>karvũ</b> (to do)</p>
+  <div id="conjugationsTableContainer"></div>
   <button class="secondary-btn" onclick="showScreen('mainScreen')">← Back</button>
 </div>
 
@@ -157,9 +167,133 @@ const persons = [
 
 const tenses = ["Present", "Past", "Future"];
 
+const conjugations = {
+  Present: {
+    col1: "Pronoun",
+    rows: [
+      { col1: "I",               form: "Hũ karũ chũ" },
+      { col1: "You (informal)",  form: "Tũ kare che" },
+      { col1: "You (formal)",    form: "Tame karo cho" },
+      { col1: "You all",         form: "Tame badhā karo cho" },
+      { col1: "He / She",        form: "E kare chhe" },
+      { col1: "We (exclusive)",  form: "Ame karīe chīe" },
+      { col1: "We (inclusive)",  form: "Āpḍe karīe chīe" },
+      { col1: "They",            form: "E badhā kare che" },
+    ],
+  },
+  Past: {
+    sections: [
+      {
+        col1: "Gender / Number",
+        note: "<b>Subject-agreeing verb</b> — example: hasvũ (to laugh)<br><small>The pronoun stays the same — only the verb ending changes based on gender and number.</small>",
+        rows: [
+          { col1: "Masculine Singular", form: "E chōkrō hasyō" },
+          { col1: "Feminine Singular",  form: "E chōkarī hasī" },
+          { col1: "Neutral Singular",   form: "Kōṇa hasyũ" },
+          { col1: "Masculine Plural",   form: "E chōkrāō hasyā" },
+          { col1: "Feminine Plural",    form: "E chōkrīō hasī" },
+          { col1: "Neutral Plural",     form: "E badhā hasyā" },
+        ],
+      },
+      {
+        col1: "Object Gender / Number",
+        note: "<b>Object-agreeing verb</b> — example: karvũ (to do)<br><small>The subject takes ergative form (adds -e). The verb agrees with the object, not the subject.</small>",
+        ergative: [
+          { pronoun: "I",              form: "Mẽ" },
+          { pronoun: "You (informal)", form: "Tẽ" },
+          { pronoun: "You (formal)",   form: "Tamē" },
+          { pronoun: "He / She",       form: "Eṇe" },
+          { pronoun: "We (exclusive)", form: "Amē" },
+          { pronoun: "We (inclusive)", form: "Āpṇē" },
+          { pronoun: "They",           form: "Eṇe" },
+        ],
+        rows: [
+          { col1: "Masculine Singular", form: "Mẽ karyō" },
+          { col1: "Feminine Singular",  form: "Mẽ karī" },
+          { col1: "Neutral Singular",   form: "Mẽ karyũ" },
+          { col1: "Masculine Plural",   form: "Mẽ karyā" },
+          { col1: "Feminine Plural",    form: "Mẽ karī" },
+          { col1: "Neutral Plural",     form: "Mẽ karyā̃" },
+        ],
+      },
+    ],
+  },
+  Future: {
+    col1: "Pronoun",
+    rows: [
+      { col1: "I",               form: "Hũ karīs" },
+      { col1: "You (informal)",  form: "Tũ karīs" },
+      { col1: "You (formal)",    form: "Tame karso" },
+      { col1: "You all",         form: "Tame badhā karso" },
+      { col1: "He / She",        form: "E karse" },
+      { col1: "We (exclusive)",  form: "Ame karīsũ" },
+      { col1: "We (inclusive)",  form: "Āpḍe karīsũ" },
+      { col1: "They",            form: "E badhā karse" },
+    ],
+  },
+};
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+}
+
+function buildConjugationTable(tense) {
+  const data = conjugations[tense];
+  if (!data) return '<p>(Coming soon)</p>';
+
+  // Multi-section (Past)
+  if (data.sections) {
+    return data.sections.map(section => {
+      const noteHtml = section.note
+        ? `<p style="font-size:16px; color:#555; margin:16px 0 8px; text-align:left; max-width:400px; margin-left:auto; margin-right:auto;">${section.note}</p>`
+        : '';
+      let extra = '';
+      if (section.ergative) {
+        const ergTrs = section.ergative.map((r, i) =>
+          `<tr ${i % 2 === 1 ? 'style="background:#f7f4ff;"' : ''}>
+            <td style="padding:10px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;">${r.pronoun}</td>
+            <td style="padding:10px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;"><b>${r.form}</b></td>
+          </tr>`
+        ).join('');
+        extra = `
+          <p style="font-size:15px; color:#888; margin:12px 0 4px;">Ergative subject forms:</p>
+          <table class="pronoun-table" style="margin-bottom:16px;">
+            <thead><tr><th>Pronoun</th><th>Ergative form</th></tr></thead>
+            <tbody>${ergTrs}</tbody>
+          </table>
+          <p style="font-size:15px; color:#888; margin:12px 0 4px;">Verb endings by object gender/number (subject = Mẽ):</p>`;
+      }
+      const trs = section.rows.map((r, i) =>
+        `<tr ${i % 2 === 1 ? 'style="background:#f7f4ff;"' : ''}>
+          <td style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;">${r.col1}</td>
+          <td style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;"><b>${r.form}</b></td>
+        </tr>`
+      ).join('');
+      return `${noteHtml}${extra}
+        <table class="pronoun-table">
+          <thead><tr><th>${section.col1}</th><th>Conjugation</th></tr></thead>
+          <tbody>${trs}</tbody>
+        </table>`;
+    }).join('<hr style="border:none; border-top:2px dashed #c5b8f5; margin:24px auto; max-width:400px;">');
+  }
+
+  // Single-section (Present / Future)
+  if (!data.rows || data.rows.length === 0) return '<p>(Coming soon)</p>';
+  const noteHtml = data.note
+    ? `<p style="font-size:16px; color:#666; margin:8px 0 12px;">${data.note}</p>`
+    : '';
+  const trs = data.rows.map((r, i) =>
+    `<tr ${i % 2 === 1 ? 'style="background:#f7f4ff;"' : ''}>
+      <td style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;">${r.col1}</td>
+      <td style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;"><b>${r.form}</b></td>
+    </tr>`
+  ).join('');
+  return `${noteHtml}
+    <table class="pronoun-table">
+      <thead><tr><th>${data.col1}</th><th>Conjugation</th></tr></thead>
+      <tbody>${trs}</tbody>
+    </table>`;
 }
 
 function random(arr) {
@@ -177,6 +311,11 @@ function generate() {
     Tense: <b>${tense}</b><br><br>
     Verb: <b>${verb}</b>`;
   document.getElementById("showPronounsBtn").style.display = "";
+  document.getElementById("showConjugationsBtn").style.display = "";
+  document.getElementById("showConjugationsBtn").textContent = `Example ${tense} Tense Conjugations`;
+  document.getElementById("conjugationsTitle").textContent = `${tense} Tense Conjugations`;
+  document.getElementById("conjugationsExampleVerb").style.display = tense === "Past" ? "none" : "";
+  document.getElementById("conjugationsTableContainer").innerHTML = buildConjugationTable(tense);
 }
 </script>
 
