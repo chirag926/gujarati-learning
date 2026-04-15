@@ -112,6 +112,7 @@
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
     <button id="showPronounsBtn" class="secondary-btn" onclick="showScreen('pronounScreen')" style="display:none;">Show Pronouns Table</button>
     <button id="showConjugationsBtn" class="secondary-btn" onclick="showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
+    <button id="hintBtn" class="secondary-btn" onclick="toggleHint()" style="display:none;">Show Verb Hint</button>
   </div>
 </div>
 
@@ -146,12 +147,37 @@
 </div>
 
 <script>
-const verbs = ["to eat", "to go", "to see", "to do", "to speak", "to run",
-               "to laugh", "to come", "to drink", "to write", "to sleep",
-               "to read", "to play", "to cry", "to listen", "to wake up",
-               "to bind or tie", "to taste", "to throw", "to wash", "to hit",
-               "to learn", "to sell", "to buy", "to touch", "to give", "to take",
-               "to think", "to dance"];
+const verbs = [
+  { en: "to eat",        gu: "khāvũ" },
+  { en: "to go",         gu: "javũ"  },
+  { en: "to see",        gu: "jovũ" },
+  { en: "to do",         gu: "karvũ" },
+  { en: "to speak",      gu: "bolvũ" },
+  { en: "to run",        gu: "doḍvũ" },
+  { en: "to laugh",      gu: "hasvũ" },
+  { en: "to come",       gu: "āvvũ " },
+  { en: "to drink",      gu: "pīvũ" },
+  { en: "to write",      gu: "lakhvũ" },
+  { en: "to sleep",      gu: "sūvũ" },
+  { en: "to read",       gu: "vān̄cvũ" },
+  { en: "to play",       gu: "ramvũ" },
+  { en: "to cry",        gu: "raḍvũ" },
+  { en: "to listen",     gu: "sāmbhaḷvũ" },
+  { en: "to wake up",    gu: "ūṭhvũ" },
+  { en: "to bind or tie",gu: "bāndhvũ " },
+  { en: "to taste",      gu: "chākhvũ" },
+  { en: "to throw",      gu: "fen̄kvũ" },
+  { en: "to wash",       gu: "dhōvũ" },
+  { en: "to hit",        gu: "mārvũ" },
+  { en: "to learn",      gu: "sīkhvũ" },
+  { en: "to sell",       gu: "vecvũ" },
+  { en: "to buy",        gu: "kharīdvũ" },
+  { en: "to touch",      gu: "aḍvũ" },
+  { en: "to give",       gu: "āpvũ" },
+  { en: "to take",       gu: "levũ" },
+  { en: "to think",      gu: "vicārvũ" },
+  { en: "to dance",      gu: "nācvũ" },
+];
 
 const persons = [
   "I",
@@ -296,6 +322,28 @@ function buildConjugationTable(tense) {
     </table>`;
 }
 
+let currentVerb = '';
+let currentPerson = '';
+let currentTense = '';
+
+function renderOutput(showHint) {
+  const hint = (showHint && currentVerb.gu)
+    ? ` <span style="color:#888; font-size:0.85em;">(${currentVerb.gu})</span>`
+    : '';
+  document.getElementById("output").innerHTML =
+    `Say in Gujarati:<br><br>
+    Pronoun: <b>${currentPerson}</b><br><br>
+    Tense: <b>${currentTense}</b><br><br>
+    Verb: <b>${currentVerb.en}</b>${hint}`;
+}
+
+function toggleHint() {
+  const btn = document.getElementById('hintBtn');
+  const showing = btn.textContent === 'Hide Verb Hint';
+  renderOutput(!showing);
+  btn.textContent = showing ? 'Show Verb Hint' : 'Hide Verb Hint';
+}
+
 function random(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -305,13 +353,14 @@ function generate() {
   const person = random(persons);
   const tense = random(tenses);
 
-  document.getElementById("output").innerHTML =
-    `Say in Gujarati:<br><br>
-    Pronoun: <b>${person}</b><br><br>
-    Tense: <b>${tense}</b><br><br>
-    Verb: <b>${verb}</b>`;
+  currentVerb = verb;
+  currentPerson = person;
+  currentTense = tense;
+  renderOutput(false);
   document.getElementById("showPronounsBtn").style.display = "";
   document.getElementById("showConjugationsBtn").style.display = "";
+  document.getElementById("hintBtn").style.display = "";
+  document.getElementById("hintBtn").textContent = "Show Verb Hint";
   document.getElementById("showConjugationsBtn").textContent = `Example ${tense} Tense Conjugations`;
   document.getElementById("conjugationsTitle").textContent = `${tense} Tense Conjugations`;
   document.getElementById("conjugationsExampleVerb").style.display = tense === "Past" ? "none" : "";
