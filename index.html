@@ -60,15 +60,80 @@
     b {
       color: #4a3f8f;
     }
+    .secondary-btn {
+      background-color: #ffffff;
+      color: #4a3f8f;
+      border: 2px solid #4a3f8f;
+      margin-top: 12px;
+    }
+    .secondary-btn:hover {
+      background-color: #ede9ff;
+    }
+    .pronoun-table {
+      margin: 20px auto 0;
+      width: 100%;
+      max-width: 400px;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(74, 63, 143, 0.15);
+      border: 2px solid #c5b8f5;
+    }
+    .screen {
+      display: none;
+    }
+    .screen.active {
+      display: block;
+    }
+    .pronoun-table th {
+      background-color: #4a3f8f;
+      color: #ffffff;
+      padding: 12px 14px;
+      font-size: 18px;
+    }
+    .pronoun-table td {
+      padding: 12px 14px;
+      font-size: 20px;
+      border-top: 1px solid #e0d9ff;
+      text-align: left;
+    }
+    .pronoun-table tr:nth-child(even) td {
+      background-color: #f7f4ff;
+    }
   </style>
 </head>
 <body>
 
-<h1>Gujarati Speaking Drill</h1>
+<div id="mainScreen" class="screen active">
+  <h1>Gujarati Speaking Drill</h1>
+  <button onclick="generate()">Generate Prompt</button>
+  <div class="card" id="output"></div>
+  <button id="showPronounsBtn" class="secondary-btn" onclick="showScreen('pronounScreen')" style="display:none;">Show Pronouns Table</button>
+</div>
 
-<button onclick="generate()">Generate Prompt</button>
-
-<div class="card" id="output"></div>
+<div id="pronounScreen" class="screen">
+  <h1>Pronouns</h1>
+  <table class="pronoun-table">
+    <thead>
+      <tr>
+        <th>English</th>
+        <th>Romanized Gujarati</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>I</td><td>Hũ</td></tr>
+      <tr><td>You (informal)</td><td>Tũ</td></tr>
+      <tr><td>You (formal)</td><td>Tame</td></tr>
+      <tr><td>You all</td><td>Tame / Tame badhā</td></tr>
+      <tr><td>He / She</td><td>E</td></tr>
+      <tr><td>We (exclusive)</td><td>Ame</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpaḍe</td></tr>
+      <tr><td>They</td><td>E badhā</td></tr>
+    </tbody>
+  </table>
+  <button class="secondary-btn" onclick="showScreen('mainScreen')">← Back</button>
+</div>
 
 <script>
 const verbs = ["to eat", "to go", "to see", "to do", "to speak", "to run",
@@ -85,11 +150,17 @@ const persons = [
   "You all",
   "He",
   "She",
-  "We",
+  "We (inclusive)",
+  "We (exclusive)",
   "They"
 ];
 
 const tenses = ["Present", "Past", "Future"];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
 function random(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -105,6 +176,7 @@ function generate() {
     Pronoun: <b>${person}</b><br><br>
     Tense: <b>${tense}</b><br><br>
     Verb: <b>${verb}</b>`;
+  document.getElementById("showPronounsBtn").style.display = "";
 }
 </script>
 
