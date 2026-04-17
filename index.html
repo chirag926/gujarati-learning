@@ -110,7 +110,7 @@
   <button onclick="generate()">Generate Prompt</button>
   <div class="card" id="output"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-    <button id="showPronounsBtn" class="secondary-btn" onclick="showScreen('pronounScreen')" style="display:none;">Show Pronouns Table</button>
+    <button id="showPronounsBtn" class="secondary-btn" onclick="showPronounScreen()" style="display:none;">Show Pronouns Table</button>
     <button id="showConjugationsBtn" class="secondary-btn" onclick="showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
     <button id="hintBtn" class="secondary-btn" onclick="toggleHint()" style="display:none;">Show Verb Hint</button>
   </div>
@@ -139,6 +139,56 @@
   <button class="secondary-btn" onclick="showScreen('mainScreen')">← Back</button>
 </div>
 
+<div id="pronounPastScreen" class="screen">
+  <h1>Pronouns (Past Tense)</h1>
+
+  <p style="font-size:17px; color:#4a3f8f; margin: 0 0 6px;"><b>Complete Action Verbs</b></p>
+  <p style="font-size:16px; color:#555; margin: 16px auto 6px; max-width:400px; text-align:left;">Complete Action Verbs - Don't need an object to complete the action (generally).</p>
+
+  <table class="pronoun-table">
+    <thead>
+      <tr>
+        <th>English</th>
+        <th>Romanized Gujarati</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>I</td><td>Hũ</td></tr>
+      <tr><td>You (informal)</td><td>Tũ</td></tr>
+      <tr><td>You (formal)</td><td>Tame</td></tr>
+      <tr><td>You all</td><td>Tame / Tame badhā</td></tr>
+      <tr><td>He / She</td><td>E</td></tr>
+      <tr><td>We (exclusive)</td><td>Ame</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
+      <tr><td>They</td><td>E badhā</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:17px; color:#4a3f8f; margin: 32px 0 6px;"><b>Incomplete Action Verbs</b></p>
+  <p style="font-size:16px; color:#555; margin: 0 auto 6px; max-width:400px; text-align:left;">Need an object to complete the action (generally).</p>
+  <table class="pronoun-table">
+    <thead>
+      <tr>
+        <th>English</th>
+        <th>Romanized Gujarati</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>I</td><td>Mė</td></tr>
+      <tr><td>You (informal)</td><td>Te</td></tr>
+      <tr><td>You (formal)</td><td>Tame</td></tr>
+      <tr><td>You all</td><td>Tame badhā'e</td></tr>
+      <tr><td>He/She (informal)</td><td>eṇe</td></tr>
+      <tr><td>He/She (formal)</td><td>emṇe</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
+      <tr><td>We (exclusive)</td><td>Ame</td></tr>
+      <tr><td>They</td><td>E badhā'e</td></tr>
+    </tbody>
+  </table>
+
+  <button class="secondary-btn" onclick="showScreen('mainScreen')" style="margin-top:20px;">← Back</button>
+</div>
+
 <div id="conjugationsScreen" class="screen">
   <h1 id="conjugationsTitle">Conjugations</h1>
   <p id="conjugationsExampleVerb" style="font-size:18px; color:#4a3f8f; margin: 0 0 4px;">Example verb: <b>karvũ</b> (to do)</p>
@@ -148,35 +198,48 @@
 
 <script>
 const verbs = [
-  { en: "to eat",        gu: "khāvũ" },
-  { en: "to go",         gu: "javũ"  },
-  { en: "to see",        gu: "jovũ" },
-  { en: "to do",         gu: "karvũ" },
-  { en: "to speak",      gu: "bolvũ" },
-  { en: "to run",        gu: "doḍvũ" },
-  { en: "to laugh",      gu: "hasvũ" },
-  { en: "to come",       gu: "āvvũ " },
-  { en: "to drink",      gu: "pīvũ" },
-  { en: "to write",      gu: "lakhvũ" },
-  { en: "to sleep",      gu: "sūvũ" },
-  { en: "to read",       gu: "vān̄cvũ" },
-  { en: "to play",       gu: "ramvũ" },
-  { en: "to cry",        gu: "raḍvũ" },
-  { en: "to listen",     gu: "sāmbhaḷvũ" },
-  { en: "to wake up",    gu: "ūṭhvũ" },
-  { en: "to bind or tie",gu: "bāndhvũ " },
-  { en: "to taste",      gu: "chākhvũ" },
-  { en: "to throw",      gu: "fen̄kvũ" },
-  { en: "to wash",       gu: "dhōvũ" },
-  { en: "to hit",        gu: "mārvũ" },
-  { en: "to learn",      gu: "sīkhvũ" },
-  { en: "to sell",       gu: "vecvũ" },
-  { en: "to buy",        gu: "kharīdvũ" },
-  { en: "to touch",      gu: "aḍvũ" },
-  { en: "to give",       gu: "āpvũ" },
-  { en: "to take",       gu: "levũ" },
-  { en: "to think",      gu: "vicārvũ" },
-  { en: "to dance",      gu: "nācvũ" },
+  { en: "to eat",              gu: "khāvũ" },
+  { en: "to make",             gu: "banāvvũ" },
+  { en: "to sing",             gu: "gāvũ" },
+  { en: "to live",             gu: "rahevũ" },
+  { en: "to call (not phone)", gu: "bōlāvvũ" },
+  { en: "to sit",              gu: "besvũ" },
+  { en: "to open",             gu: "khōlvũ" },
+  { en: "to close",            gu: "bandh karvũ" },
+  { en: "to close",            gu: "kūdvũ" },
+  { en: "to keep",             gu: "rākhvũ" },
+  { en: "to put",              gu: "mūkvũ" },
+  { en: "to smell",            gu: "sūnghvũ" },
+  { en: "to fill",             gu: "bharvũ" },
+  { en: "to go",               gu: "javũ"  },
+  { en: "to see",              gu: "jōvũ" },
+  { en: "to do",               gu: "karvũ" },
+  { en: "to speak",            gu: "bōlvũ" },
+  { en: "to run",              gu: "dōḍvũ" },
+  { en: "to laugh",            gu: "hasvũ" },
+  { en: "to come",             gu: "āvvũ " },
+  { en: "to drink",            gu: "pīvũ" },
+  { en: "to write",            gu: "lakhvũ" },
+  { en: "to sleep",            gu: "sūvũ" },
+  { en: "to read",             gu: "vān̄cvũ" },
+  { en: "to play",             gu: "ramvũ" },
+  { en: "to cry",              gu: "raḍvũ" },
+  { en: "to listen",           gu: "sāmbhaḷvũ" },
+  { en: "to wake up",          gu: "ūṭhvũ" },
+  { en: "to bind or tie",      gu: "bāndhvũ " },
+  { en: "to taste",            gu: "chākhvũ" },
+  { en: "to throw",            gu: "fen̄kvũ" },
+  { en: "to wash",             gu: "dhōvũ" },
+  { en: "to hit",              gu: "mārvũ" },
+  { en: "to learn",            gu: "sīkhvũ" },
+  { en: "to sell",             gu: "vecvũ" },
+  { en: "to buy",              gu: "kharīdvũ" },
+  { en: "to touch",            gu: "aḍvũ" },
+  { en: "to give",             gu: "āpvũ" },
+  { en: "to take",             gu: "levũ" },
+  { en: "to think",            gu: "vicārvũ" },
+  { en: "to dance",            gu: "nācvũ" },
+  { en: "to meet",             gu: "maḷvũ" },
 ];
 
 const persons = [
@@ -184,8 +247,10 @@ const persons = [
   "You (informal)",
   "You (formal)",
   "You all",
-  "He",
-  "She",
+  "He (informal)",
+  "He (formal)",
+  "She (informal)",
+  "She (formal)",
   "We (inclusive)",
   "We (exclusive)",
   "They"
@@ -196,65 +261,44 @@ const tenses = ["Present", "Past", "Future"];
 const conjugations = {
   Present: {
     col1: "Pronoun",
+    col2: "Suffix and Tense Word",
+    col3: "Example (karvũ)",
     rows: [
-      { col1: "I",               form: "Hũ karũ chũ" },
-      { col1: "You (informal)",  form: "Tũ kare che" },
-      { col1: "You (formal)",    form: "Tame karo cho" },
-      { col1: "You all",         form: "Tame badhā karo cho" },
-      { col1: "He / She",        form: "E kare chhe" },
-      { col1: "We (exclusive)",  form: "Ame karīe chīe" },
-      { col1: "We (inclusive)",  form: "Āpḍe karīe chīe" },
-      { col1: "They",            form: "E badhā kare che" },
+      { col1: "I",              col2: "-ũ, chũ",   col3: "Hũ karũ chũ" },
+      { col1: "You informal",   col2: "-e, che",   col3: "Tũ kare che" },
+      { col1: "You (formal)",   col2: "-ō, chō",   col3: "Tame karō chō" },
+      { col1: "You all",        col2: "-ō, chō",   col3: "Tame badhā karō chō" },
+      { col1: "He/She",         col2: "-e, chhe",  col3: "E kare chhe" },
+      { col1: "We (exclusive)", col2: "-īe, chīe", col3: "Ame karīe chīe" },
+      { col1: "We (inclusive)", col2: "-īe, chīe", col3: "Āpḍe karīe chīe" },
+      { col1: "They",           col2: "-e, che",   col3: "E badhā kare che" },
     ],
   },
   Past: {
-    sections: [
-      {
-        col1: "Gender / Number",
-        note: "<b>Subject-agreeing verb</b> — example: hasvũ (to laugh)<br><small>The pronoun stays the same — only the verb ending changes based on gender and number.</small>",
-        rows: [
-          { col1: "Masculine Singular", form: "E chōkrō hasyō" },
-          { col1: "Feminine Singular",  form: "E chōkarī hasī" },
-          { col1: "Neutral Singular",   form: "Kōṇa hasyũ" },
-          { col1: "Masculine Plural",   form: "E chōkrāō hasyā" },
-          { col1: "Feminine Plural",    form: "E chōkrīō hasī" },
-          { col1: "Neutral Plural",     form: "E badhā hasyā" },
-        ],
-      },
-      {
-        col1: "Object Gender / Number",
-        note: "<b>Object-agreeing verb</b> — example: karvũ (to do)<br><small>The subject takes ergative form (adds -e). The verb agrees with the object, not the subject.</small>",
-        ergative: [
-          { pronoun: "I",              form: "Mẽ" },
-          { pronoun: "You (informal)", form: "Tẽ" },
-          { pronoun: "You (formal)",   form: "Tamē" },
-          { pronoun: "He / She",       form: "Eṇe" },
-          { pronoun: "We (exclusive)", form: "Amē" },
-          { pronoun: "We (inclusive)", form: "Āpṇē" },
-          { pronoun: "They",           form: "Eṇe" },
-        ],
-        rows: [
-          { col1: "Masculine Singular", form: "Mẽ karyō" },
-          { col1: "Feminine Singular",  form: "Mẽ karī" },
-          { col1: "Neutral Singular",   form: "Mẽ karyũ" },
-          { col1: "Masculine Plural",   form: "Mẽ karyā" },
-          { col1: "Feminine Plural",    form: "Mẽ karī" },
-          { col1: "Neutral Plural",     form: "Mẽ karyā̃" },
-        ],
-      },
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Complete Action verbs agree with the doer of the action.\nIncomplete Action verbs agree with the object.\nPronouns depend on type of Verb.",
+    rows: [
+      { col1: "Masculine",     col2: "-ō, hatō",    col3: "karyōtō" },
+      { col1: "Feminine",      col2: "-ī, hatī",    col3: "karītī" },
+      { col1: "Neutral",       col2: "-yũ, hatũ",   col3: "karyũtũ" },
+      { col1: "Plural/Formal", col2: "-yā, hatā",   col3: "karyātā" },
     ],
   },
   Future: {
     col1: "Pronoun",
+    col2: "Suffix",
+    col3: "Example (karvũ)",
     rows: [
-      { col1: "I",               form: "Hũ karīs" },
-      { col1: "You (informal)",  form: "Tũ karīs" },
-      { col1: "You (formal)",    form: "Tame karso" },
-      { col1: "You all",         form: "Tame badhā karso" },
-      { col1: "He / She",        form: "E karse" },
-      { col1: "We (exclusive)",  form: "Ame karīsũ" },
-      { col1: "We (inclusive)",  form: "Āpḍe karīsũ" },
-      { col1: "They",            form: "E badhā karse" },
+      { col1: "I",              col2: "-īs",  col3: "Hũ karīs" },
+      { col1: "You (informal)", col2: "-īs",  col3: "Tũ karīs" },
+      { col1: "You (formal)",   col2: "-sō",  col3: "Tame karsō" },
+      { col1: "You all",        col2: "-sō",  col3: "Tame badhā karsō" },
+      { col1: "He/She",         col2: "-se",  col3: "E karse" },
+      { col1: "We (exclusive)", col2: "-īsũ", col3: "Ame karīsũ" },
+      { col1: "We (inclusive)", col2: "-īsũ", col3: "Āpḍe karīsũ" },
+      { col1: "They",           col2: "-se",  col3: "E badhā karse" },
     ],
   },
 };
@@ -304,20 +348,28 @@ function buildConjugationTable(tense) {
     }).join('<hr style="border:none; border-top:2px dashed #c5b8f5; margin:24px auto; max-width:400px;">');
   }
 
-  // Single-section (Present / Future)
+  // Single-section (Present / Future / Past)
   if (!data.rows || data.rows.length === 0) return '<p>(Coming soon)</p>';
   const noteHtml = data.note
     ? `<p style="font-size:16px; color:#666; margin:8px 0 12px;">${data.note}</p>`
     : '';
-  const trs = data.rows.map((r, i) =>
-    `<tr ${i % 2 === 1 ? 'style="background:#f7f4ff;"' : ''}>
-      <td style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;">${r.col1}</td>
-      <td style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;"><b>${r.form}</b></td>
-    </tr>`
-  ).join('');
+  const hasThirdCol = !!data.col3;
+  const trs = data.rows.map((r, i) => {
+    const bg = i % 2 === 1 ? 'style="background:#f7f4ff;"' : '';
+    const tdStyle = 'style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left; white-space:nowrap;"';
+    const extra = hasThirdCol
+      ? `<td ${tdStyle}><i>${r.col3}</i></td>`
+      : '';
+    const formCell = hasThirdCol
+      ? `<td ${tdStyle}><b>${r.col2}</b></td>`
+      : `<td ${tdStyle}><b>${r.form}</b></td>`;
+    return `<tr ${bg}><td ${tdStyle}>${r.col1}</td>${formCell}${extra}</tr>`;
+  }).join('');
+  const extraTh = hasThirdCol ? `<th>Example</th>` : '';
+  const col2Label = hasThirdCol ? data.col2 : 'Conjugation';
   return `${noteHtml}
     <table class="pronoun-table">
-      <thead><tr><th>${data.col1}</th><th>Conjugation</th></tr></thead>
+      <thead><tr><th>${data.col1}</th><th>${col2Label}</th>${extraTh}</tr></thead>
       <tbody>${trs}</tbody>
     </table>`;
 }
@@ -344,6 +396,10 @@ function toggleHint() {
   btn.textContent = showing ? 'Show Verb Hint' : 'Hide Verb Hint';
 }
 
+function showPronounScreen() {
+  showScreen(currentTense === 'Past' ? 'pronounPastScreen' : 'pronounScreen');
+}
+
 function random(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -363,7 +419,7 @@ function generate() {
   document.getElementById("hintBtn").textContent = "Show Verb Hint";
   document.getElementById("showConjugationsBtn").textContent = `Example ${tense} Tense Conjugations`;
   document.getElementById("conjugationsTitle").textContent = `${tense} Tense Conjugations`;
-  document.getElementById("conjugationsExampleVerb").style.display = tense === "Past" ? "none" : "";
+  document.getElementById("conjugationsExampleVerb").style.display = "none";
   document.getElementById("conjugationsTableContainer").innerHTML = buildConjugationTable(tense);
 }
 </script>
