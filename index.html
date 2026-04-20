@@ -4,22 +4,32 @@
   <title>Gujarati Practice</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
+    :root {
+      --color-bg: #f0f4ff;
+      --color-primary: #4a3f8f;
+      --color-primary-hover: #6b5ebd;
+      --color-border: #c5b8f5;
+      --color-border-light: #e0d9ff;
+      --color-table-even: #f7f4ff;
+      --color-secondary-hover: #ede9ff;
+      --color-shadow: rgba(74, 63, 143, 0.15);
+    }
     body {
       font-family: Arial;
       text-align: center;
       padding: 40px 20px;
-      background-color: #f0f4ff;
+      background-color: var(--color-bg);
       color: #1a1a2e;
       box-sizing: border-box;
     }
     h1 {
-      color: #4a3f8f;
+      color: var(--color-primary);
     }
     button {
       font-size: 20px;
       padding: 15px 25px;
       margin-top: 20px;
-      background-color: #4a3f8f;
+      background-color: var(--color-primary);
       color: #ffffff;
       border: none;
       border-radius: 8px;
@@ -28,13 +38,13 @@
       max-width: 400px;
     }
     button:hover {
-      background-color: #6b5ebd;
+      background-color: var(--color-primary-hover);
     }
     .card {
       margin-top: 30px;
       font-size: 24px;
       background-color: #ffffff;
-      border: 2px solid #c5b8f5;
+      border: 2px solid var(--color-border);
       border-radius: 12px;
       padding: 30px 20px;
       display: block;
@@ -43,7 +53,7 @@
       margin-left: auto;
       margin-right: auto;
       box-sizing: border-box;
-      box-shadow: 0 4px 12px rgba(74, 63, 143, 0.15);
+      box-shadow: 0 4px 12px var(--color-shadow);
     }
     @media (max-width: 480px) {
       h1 {
@@ -58,16 +68,16 @@
       }
     }
     b {
-      color: #4a3f8f;
+      color: var(--color-primary);
     }
     .secondary-btn {
       background-color: #ffffff;
-      color: #4a3f8f;
-      border: 2px solid #4a3f8f;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
       margin-top: 12px;
     }
     .secondary-btn:hover {
-      background-color: #ede9ff;
+      background-color: var(--color-secondary-hover);
     }
     .pronoun-table {
       margin: 20px auto 0;
@@ -77,8 +87,8 @@
       background-color: #ffffff;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(74, 63, 143, 0.15);
-      border: 2px solid #c5b8f5;
+      box-shadow: 0 4px 12px var(--color-shadow);
+      border: 2px solid var(--color-border);
     }
     .screen {
       display: none;
@@ -87,7 +97,7 @@
       display: block;
     }
     .pronoun-table th {
-      background-color: #4a3f8f;
+      background-color: var(--color-primary);
       color: #ffffff;
       padding: 12px 14px;
       font-size: 18px;
@@ -95,11 +105,11 @@
     .pronoun-table td {
       padding: 12px 14px;
       font-size: 20px;
-      border-top: 1px solid #e0d9ff;
+      border-top: 1px solid var(--color-border-light);
       text-align: left;
     }
     .pronoun-table tr:nth-child(even) td {
-      background-color: #f7f4ff;
+      background-color: var(--color-table-even);
     }
   </style>
 </head>
@@ -142,7 +152,7 @@
 <div id="pronounPastScreen" class="screen">
   <h1>Pronouns (Past Tense)</h1>
 
-  <p style="font-size:17px; color:#4a3f8f; margin: 0 0 6px;"><b>Complete Action Verbs</b></p>
+  <p style="font-size:17px; color:var(--color-primary); margin: 0 0 6px;"><b>Complete Action Verbs</b></p>
   <p style="font-size:16px; color:#555; margin: 16px auto 6px; max-width:400px; text-align:left;">Complete Action Verbs - Don't need an object to complete the action (generally).</p>
 
   <table class="pronoun-table">
@@ -164,7 +174,7 @@
     </tbody>
   </table>
 
-  <p style="font-size:17px; color:#4a3f8f; margin: 32px 0 6px;"><b>Incomplete Action Verbs</b></p>
+  <p style="font-size:17px; color:var(--color-primary); margin: 32px 0 6px;"><b>Incomplete Action Verbs</b></p>
   <p style="font-size:16px; color:#555; margin: 0 auto 6px; max-width:400px; text-align:left;">Need an object to complete the action (generally).</p>
   <table class="pronoun-table">
     <thead>
@@ -174,7 +184,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td>I</td><td>Mė</td></tr>
+      <tr><td>I</td><td>Mẽ</td></tr>
       <tr><td>You (informal)</td><td>Te</td></tr>
       <tr><td>You (formal)</td><td>Tame</td></tr>
       <tr><td>You all</td><td>Tame badhā'e</td></tr>
@@ -189,57 +199,87 @@
   <button class="secondary-btn" onclick="showScreen('mainScreen')" style="margin-top:20px;">← Back</button>
 </div>
 
+<div id="pronounPerfectScreen" class="screen">
+  <h1>Pronouns (Perfect Tense)</h1>
+
+  <table class="pronoun-table">
+    <thead>
+      <tr>
+        <th>English</th>
+        <th>Romanized Gujarati</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>I</td><td>Marẽ</td></tr>
+      <tr><td>You (informal)</td><td>Tarẽ</td></tr>
+      <tr><td>You (formal)</td><td>Tamarẽ</td></tr>
+      <tr><td>You all</td><td>Tamarẽ badhā'ne</td></tr>
+      <tr><td>He/She (informal)</td><td>ene</td></tr>
+      <tr><td>He/She (formal)</td><td>emne</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
+      <tr><td>We (exclusive)</td><td>Amarẽ</td></tr>
+      <tr><td>They</td><td>E badhā'ne</td></tr>
+    </tbody>
+  </table>
+
+  <button class="secondary-btn" onclick="showScreen('mainScreen')" style="margin-top:20px;">← Back</button>
+</div>
+
 <div id="conjugationsScreen" class="screen">
   <h1 id="conjugationsTitle">Conjugations</h1>
-  <p id="conjugationsExampleVerb" style="font-size:18px; color:#4a3f8f; margin: 0 0 4px;">Example verb: <b>karvũ</b> (to do)</p>
+  <p id="conjugationsExampleVerb" style="font-size:18px; color:var(--color-primary); margin: 0 0 4px;">Example verb: <b>karvānũ</b> (to do)</p>
   <div id="conjugationsTableContainer"></div>
   <button class="secondary-btn" onclick="showScreen('mainScreen')">← Back</button>
 </div>
 
 <script>
 const verbs = [
-  { en: "to eat",              gu: "khāvũ" },
-  { en: "to make",             gu: "banāvvũ" },
-  { en: "to sing",             gu: "gāvũ" },
-  { en: "to live",             gu: "rahevũ" },
-  { en: "to call (not phone)", gu: "bōlāvvũ" },
-  { en: "to sit",              gu: "besvũ" },
-  { en: "to open",             gu: "khōlvũ" },
-  { en: "to close",            gu: "bandh karvũ" },
-  { en: "to close",            gu: "kūdvũ" },
-  { en: "to keep",             gu: "rākhvũ" },
-  { en: "to put",              gu: "mūkvũ" },
-  { en: "to smell",            gu: "sūnghvũ" },
-  { en: "to fill",             gu: "bharvũ" },
-  { en: "to go",               gu: "javũ"  },
-  { en: "to see",              gu: "jōvũ" },
-  { en: "to do",               gu: "karvũ" },
-  { en: "to speak",            gu: "bōlvũ" },
-  { en: "to run",              gu: "dōḍvũ" },
-  { en: "to laugh",            gu: "hasvũ" },
-  { en: "to come",             gu: "āvvũ " },
-  { en: "to drink",            gu: "pīvũ" },
-  { en: "to write",            gu: "lakhvũ" },
-  { en: "to sleep",            gu: "sūvũ" },
-  { en: "to read",             gu: "vān̄cvũ" },
-  { en: "to play",             gu: "ramvũ" },
-  { en: "to cry",              gu: "raḍvũ" },
-  { en: "to listen",           gu: "sāmbhaḷvũ" },
-  { en: "to wake up",          gu: "ūṭhvũ" },
-  { en: "to bind or tie",      gu: "bāndhvũ " },
-  { en: "to taste",            gu: "chākhvũ" },
-  { en: "to throw",            gu: "fen̄kvũ" },
-  { en: "to wash",             gu: "dhōvũ" },
-  { en: "to hit",              gu: "mārvũ" },
-  { en: "to learn",            gu: "sīkhvũ" },
-  { en: "to sell",             gu: "vecvũ" },
-  { en: "to buy",              gu: "kharīdvũ" },
-  { en: "to touch",            gu: "aḍvũ" },
-  { en: "to give",             gu: "āpvũ" },
-  { en: "to take",             gu: "levũ" },
-  { en: "to think",            gu: "vicārvũ" },
-  { en: "to dance",            gu: "nācvũ" },
-  { en: "to meet",             gu: "maḷvũ" },
+  { en: "to eat",              gu: "khāvānũ",         objects: ["mango", "carrots", "ginger"] },
+  { en: "to make",             gu: "banāvvānũ",       objects: ["candy", "home", "son"] },
+  { en: "to sing",             gu: "gāvānũ",          objects: [] },
+  { en: "to live",             gu: "rahevānũ",        objects: [] },
+  { en: "to call (not phone)", gu: "bōlāvvānũ",       objects: ["Chirag", "Shivani", "Kamian"] },
+  { en: "to sit",              gu: "besvānũ",         objects: [] },
+  { en: "to open",             gu: "khōlvānũ",        objects: ["window", "home", "room"] },
+  { en: "to close",            gu: "bãdh karvānũ",    objects: ["window", "home", "room"] },
+  { en: "to jump",             gu: "kūdvānũ",         objects: [] },
+  { en: "to keep",             gu: "rākhvānũ",        objects: ["mangos", "money"] },
+  { en: "to put",              gu: "mūkvānũ",         objects: [] },
+  { en: "to smell",            gu: "sūnghvānũ",       objects: [] },
+  { en: "to fill",             gu: "bharvānũ",        objects: [] },
+  { en: "to go",               gu: "javānũ",          objects: [] },
+  { en: "to see",              gu: "jōvānũ",          objects: ["movie", "boy", "girl", "people"] },
+  { en: "to do",               gu: "karvānũ",         objects: [] },
+  { en: "to speak",            gu: "bōlvānũ",         objects: [] },
+  { en: "to run",              gu: "dōḍvānũ",         objects: [] },
+  { en: "to laugh",            gu: "hasvānũ",         objects: [] },
+  { en: "to come",             gu: "āvvānũ",          objects: [] },
+  { en: "to drink",            gu: "pīvānũ",          objects: ["water", "soda", "tea"] },
+  { en: "to write",            gu: "lakhvānũ",        objects: [] },
+  { en: "to sleep",            gu: "sūvānũ",          objects: [] },
+  { en: "to read",             gu: "vã̄cvānũ",         objects: [] },
+  { en: "to play",             gu: "ramvānũ",         objects: [] },
+  { en: "to cry",              gu: "raḍvānũ",         objects: [] },
+  { en: "to listen",           gu: "sāmbhaḷvānũ",     objects: [] },
+  { en: "to wake up",          gu: "ūṭhvānũ",         objects: [] },
+  { en: "to bind or tie",      gu: "bāndhvānũ",       objects: [] },
+  { en: "to taste",            gu: "chākhvānũ",       objects: [] },
+  { en: "to throw",            gu: "fen̄kvānũ",        objects: ["ball", "potatoes"] },
+  { en: "to wash",             gu: "dhōvānũ",         objects: ["dishes", "hands"] },
+  { en: "to hit",              gu: "mārvānũ",         objects: [] },
+  { en: "to learn",            gu: "sīkhvānũ",        objects: ["Gujarati"] },
+  { en: "to sell",             gu: "vecvānũ",         objects: ["milk", "homes", "fish"] },
+  { en: "to buy",              gu: "kharīdvānũ",      objects: ["phone", "car", "phones"] },
+  { en: "to touch",            gu: "aḍvānũ",          objects: [] },
+  { en: "to give",             gu: "āpvānũ",          objects: ["water", "clothes", "car"] },
+  { en: "to take",             gu: "levānũ",          objects: ["food", "money", "candy"] },
+  { en: "to think",            gu: "vicārvānũ",       objects: [] },
+  { en: "to dance",            gu: "nācvānũ",         objects: [] },
+  { en: "to meet",             gu: "maḷvānũ",         objects: ["Chirag", "Grandma", "Grandpa"] },
+  { en: "to rest",             gu: "ārām karvānũ",    objects: [] },
+  { en: "to organize",         gu: "gōṭhvānũ",        objects: ["party", "clothes"] },
+  { en: "to count",            gu: "gāṇvānũ",         objects: ["money", "dogs", "cars"] },
+  { en: "to forget",           gu: "bhūlvānũ",        objects: [] },
 ];
 
 const persons = [
@@ -256,13 +296,13 @@ const persons = [
   "They"
 ];
 
-const tenses = ["Present", "Past", "Future"];
+const tenses = ["Simple Present", "Continuous Present", "Simple Past", "Continuous Past", "Simple Future", "Continuous Future", "Perfect Past", "Perfect Present", "Perfect Future"];
 
 const conjugations = {
-  Present: {
+  "Simple Present": {
     col1: "Pronoun",
     col2: "Suffix and Tense Word",
-    col3: "Example (karvũ)",
+    col3: "Example (karvānũ)",
     rows: [
       { col1: "I",              col2: "-ũ, chũ",   col3: "Hũ karũ chũ" },
       { col1: "You informal",   col2: "-e, che",   col3: "Tũ kare che" },
@@ -274,7 +314,7 @@ const conjugations = {
       { col1: "They",           col2: "-e, che",   col3: "E badhā kare che" },
     ],
   },
-  Past: {
+  "Simple Past": {
     col1: "Gender",
     col2: "Suffix and Tense Word",
     col3: "Example",
@@ -286,10 +326,10 @@ const conjugations = {
       { col1: "Plural/Formal", col2: "-yā, hatā",   col3: "karyātā" },
     ],
   },
-  Future: {
+  "Simple Future": {
     col1: "Pronoun",
     col2: "Suffix",
-    col3: "Example (karvũ)",
+    col3: "Example (karvānũ)",
     rows: [
       { col1: "I",              col2: "-īs",  col3: "Hũ karīs" },
       { col1: "You (informal)", col2: "-īs",  col3: "Tũ karīs" },
@@ -301,6 +341,54 @@ const conjugations = {
       { col1: "They",           col2: "-se",  col3: "E badhā karse" },
     ],
   },
+  "Continuous Past": {
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example (karvānũ)",
+    note: "Verbs agree with the doer.",
+    rows: [
+      { col1: "Masculine",     col2: "-tō, hatō",   col3: "kartōtō" },
+      { col1: "Feminine",      col2: "-tī, hatī",   col3: "kartītī" },
+      { col1: "Neutral",       col2: "-tũ, hatũ",   col3: "kartũtũ" },
+      { col1: "Plural/Formal", col2: "-tā, hatā",   col3: "kartātā" },
+    ],
+  },
+  "Perfect Past": {
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Verbs agree with the object.",
+    rows: [
+      { col1: "Masculine",     col2: "-vānō, hatō", col3: "karvānō hatō" },
+      { col1: "Feminine",      col2: "-vānī, hatī", col3: "karvānī hatī" },
+      { col1: "Neutral",       col2: "-vānũ, hatũ", col3: "karvānũ hatũ" },
+      { col1: "Plural/Formal", col2: "-vānā, hatā", col3: "karvānā hatā" },
+    ],
+  },
+  "Perfect Present": {
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Verbs agree with the object.",
+    rows: [
+      { col1: "Masculine",     col2: "-vānō, che", col3: "karvānō che" },
+      { col1: "Feminine",      col2: "-vānī, che", col3: "karvānī che" },
+      { col1: "Neutral",       col2: "-vānũ, che", col3: "karvānũ che" },
+      { col1: "Plural/Formal", col2: "-vānā, che", col3: "karvānā che" },
+    ],
+  },
+  "Perfect Future":  { 
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Verbs agree with the object. If a timeframe is specified, use \"che\". If not, use \"hase\".\n\"hase\" indicates the action is a maybe.",
+    rows: [
+      { col1: "Masculine",     col2: "-vānō, che/hase", col3: "karvānō che/hase" },
+      { col1: "Feminine",      col2: "-vānī, che/hase", col3: "karvānī che/hase" },
+      { col1: "Neutral",       col2: "-vānũ, che/hase", col3: "karvānũ che/hase" },
+      { col1: "Plural/Formal", col2: "-vānā, che/hase", col3: "karvānā che/hase" },
+    ],
+  },
 };
 
 function showScreen(id) {
@@ -309,7 +397,11 @@ function showScreen(id) {
 }
 
 function buildConjugationTable(tense) {
-  const data = conjugations[tense];
+  const tenseAlias = {
+    "Continuous Present": "Simple Present",
+    "Continuous Future": "Simple Future",
+  };
+  const data = conjugations[tenseAlias[tense] || tense];
   if (!data) return '<p>(Coming soon)</p>';
 
   // Multi-section (Past)
@@ -321,9 +413,9 @@ function buildConjugationTable(tense) {
       let extra = '';
       if (section.ergative) {
         const ergTrs = section.ergative.map((r, i) =>
-          `<tr ${i % 2 === 1 ? 'style="background:#f7f4ff;"' : ''}>
-            <td style="padding:10px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;">${r.pronoun}</td>
-            <td style="padding:10px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;"><b>${r.form}</b></td>
+          `<tr ${i % 2 === 1 ? 'style="background:var(--color-table-even);"' : ''}>
+            <td style="padding:10px 14px; font-size:18px; border-top:1px solid var(--color-border-light); text-align:left;">${r.pronoun}</td>
+            <td style="padding:10px 14px; font-size:18px; border-top:1px solid var(--color-border-light); text-align:left;"><b>${r.form}</b></td>
           </tr>`
         ).join('');
         extra = `
@@ -335,9 +427,9 @@ function buildConjugationTable(tense) {
           <p style="font-size:15px; color:#888; margin:12px 0 4px;">Verb endings by object gender/number (subject = Mẽ):</p>`;
       }
       const trs = section.rows.map((r, i) =>
-        `<tr ${i % 2 === 1 ? 'style="background:#f7f4ff;"' : ''}>
-          <td style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;">${r.col1}</td>
-          <td style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left;"><b>${r.form}</b></td>
+        `<tr ${i % 2 === 1 ? 'style="background:var(--color-table-even);"' : ''}>
+          <td style="padding:12px 14px; font-size:18px; border-top:1px solid var(--color-border-light); text-align:left;">${r.col1}</td>
+          <td style="padding:12px 14px; font-size:18px; border-top:1px solid var(--color-border-light); text-align:left;"><b>${r.form}</b></td>
         </tr>`
       ).join('');
       return `${noteHtml}${extra}
@@ -345,7 +437,7 @@ function buildConjugationTable(tense) {
           <thead><tr><th>${section.col1}</th><th>Conjugation</th></tr></thead>
           <tbody>${trs}</tbody>
         </table>`;
-    }).join('<hr style="border:none; border-top:2px dashed #c5b8f5; margin:24px auto; max-width:400px;">');
+    }).join('<hr style="border:none; border-top:2px dashed var(--color-border); margin:24px auto; max-width:400px;">');
   }
 
   // Single-section (Present / Future / Past)
@@ -355,8 +447,8 @@ function buildConjugationTable(tense) {
     : '';
   const hasThirdCol = !!data.col3;
   const trs = data.rows.map((r, i) => {
-    const bg = i % 2 === 1 ? 'style="background:#f7f4ff;"' : '';
-    const tdStyle = 'style="padding:12px 14px; font-size:18px; border-top:1px solid #e0d9ff; text-align:left; white-space:nowrap;"';
+    const bg = i % 2 === 1 ? 'style="background:var(--color-table-even);"' : '';
+    const tdStyle = 'style="padding:12px 14px; font-size:18px; border-top:1px solid var(--color-border-light); text-align:left; white-space:nowrap;"';
     const extra = hasThirdCol
       ? `<td ${tdStyle}><i>${r.col3}</i></td>`
       : '';
@@ -377,16 +469,20 @@ function buildConjugationTable(tense) {
 let currentVerb = '';
 let currentPerson = '';
 let currentTense = '';
+let currentObject = '';
 
 function renderOutput(showHint) {
   const hint = (showHint && currentVerb.gu)
     ? ` <span style="color:#888; font-size:0.85em;">(${currentVerb.gu})</span>`
     : '';
+  const objectLine = currentObject
+    ? `<br><br>Object: <b>${currentObject}</b>`
+    : '';
   document.getElementById("output").innerHTML =
     `Say in Gujarati:<br><br>
     Pronoun: <b>${currentPerson}</b><br><br>
     Tense: <b>${currentTense}</b><br><br>
-    Verb: <b>${currentVerb.en}</b>${hint}`;
+    Verb: <b>${currentVerb.en}</b>${hint}${objectLine}`;
 }
 
 function toggleHint() {
@@ -397,7 +493,13 @@ function toggleHint() {
 }
 
 function showPronounScreen() {
-  showScreen(currentTense === 'Past' ? 'pronounPastScreen' : 'pronounScreen');
+  if (currentTense === 'Simple Past' || currentTense === 'Continuous Past') {
+    showScreen('pronounPastScreen');
+  } else if (currentTense === 'Perfect Past' || currentTense === 'Perfect Present' || currentTense === 'Perfect Future') {
+    showScreen('pronounPerfectScreen');
+  } else {
+    showScreen('pronounScreen');
+  }
 }
 
 function random(arr) {
@@ -412,6 +514,30 @@ function generate() {
   currentVerb = verb;
   currentPerson = person;
   currentTense = tense;
+  currentObject = (verb.objects && verb.objects.length > 0 && Math.random() < 0.5) ? random(verb.objects) : '';
+
+  const tenseSchemes = {
+    'Simple Present':     { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Continuous Present': { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Simple Past':        { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Continuous Past':    { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Simple Future':      { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Continuous Future':  { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Perfect Past':       { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Perfect Present':    { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Perfect Future':     { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+  };
+  const scheme = tenseSchemes[tense] || tenseSchemes['Simple Past'];
+  const root = document.documentElement;
+  root.style.setProperty('--color-bg', scheme.bg);
+  root.style.setProperty('--color-primary', scheme.primary);
+  root.style.setProperty('--color-primary-hover', scheme.hover);
+  root.style.setProperty('--color-border', scheme.border);
+  root.style.setProperty('--color-border-light', scheme.borderLight);
+  root.style.setProperty('--color-table-even', scheme.tableEven);
+  root.style.setProperty('--color-secondary-hover', scheme.secondaryHover);
+  root.style.setProperty('--color-shadow', scheme.shadow);
+
   renderOutput(false);
   document.getElementById("showPronounsBtn").style.display = "";
   document.getElementById("showConjugationsBtn").style.display = "";
