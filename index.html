@@ -111,12 +111,148 @@
     .pronoun-table tr:nth-child(even) td {
       background-color: var(--color-table-even);
     }
+    body.home {
+      background-color: #1a2035;
+      color: #c8d3f0;
+    }
+    body.home h1 {
+      color: #c8d3f0;
+    }
+    body.home button {
+      background-color: #253050;
+      border: 1px solid #3d4f7a;
+      color: #dde3f0;
+    }
+    body.home button:hover {
+      background-color: #2e3b60;
+    }
+    /* ── Flash Cards ──────────────────────────────── */
+    .fc-wrap {
+      perspective: 1000px;
+      width: 100%;
+      max-width: 400px;
+      height: 220px;
+      margin: 24px auto 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .fc-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.45s;
+      transform-style: preserve-3d;
+    }
+    .fc-inner.flipped {
+      transform: rotateY(180deg);
+    }
+    .fc-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+    .fc-front {
+      background: #1c1c1e;
+      border: 2px solid #3a3a3c;
+    }
+    .fc-back {
+      background: #2c2c2e;
+      border: 2px solid #48484a;
+      transform: rotateY(180deg);
+    }
+    .fc-category {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8e8e93;
+    }
+    .fc-word {
+      font-size: 28px;
+      font-weight: bold;
+      color: #f0f0f0;
+      text-align: center;
+    }
+    .fc-hint {
+      font-size: 13px;
+      color: #636366;
+      margin-top: 4px;
+    }
+    .fc-nav {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 16px;
+      width: 100%;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .fc-nav button {
+      flex: 1;
+      margin-top: 0;
+      font-size: 18px;
+      padding: 14px 10px;
+    }
+    .fc-progress {
+      font-size: 14px;
+      color: #8e8e93;
+      margin: 14px 0 0;
+    }
+    .fc-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      max-width: 400px;
+      margin: 0 auto 4px;
+    }
+    .fc-filter-btn {
+      font-size: 13px;
+      padding: 6px 14px;
+      margin-top: 0;
+      width: auto;
+      max-width: none;
+      background: #2c2c2e;
+      color: #e0e0e0;
+      border: 1px solid #48484a;
+      border-radius: 20px;
+    }
+    .fc-filter-btn.active {
+      background: #5a5aff;
+      border-color: #5a5aff;
+      color: #fff;
+    }
+    .fc-filter-btn:hover {
+      background: #3a3a3c;
+    }
+    .fc-filter-btn.active:hover {
+      background: #6e6eff;
+    }
   </style>
 </head>
-<body>
+<body class="home">
 
-<div id="mainScreen" class="screen active">
+<div id="homeScreen" class="screen active">
+  <h1>Gujarati Practice</h1>
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+    <button onclick="showScreen('mainScreen')">Verb / Tense Practice</button>
+    <button onclick="showScreen('flashcardsScreen'); initFlashcards();">Flash Cards</button>
+  </div>
+</div>
+
+<div id="mainScreen" class="screen">
   <h1>Gujarati Speaking Drill</h1>
+  <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
   <button onclick="generate()">Generate Prompt</button>
   <div class="card" id="output"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
@@ -253,6 +389,7 @@ const verbs = [
   { en: "to speak",            gu: "bōlvānũ",         objects: [] },
   { en: "to run",              gu: "dōḍvānũ",         objects: [] },
   { en: "to laugh",            gu: "hasvānũ",         objects: [] },
+  { en: "to fall ",            gu: "paḍvānũ",         objects: [] },
   { en: "to come",             gu: "āvvānũ",          objects: [] },
   { en: "to drink",            gu: "pīvānũ",          objects: ["water", "soda", "tea"] },
   { en: "to write",            gu: "lakhvānũ",        objects: [] },
@@ -394,6 +531,7 @@ const conjugations = {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  document.body.classList.toggle('home', id === 'homeScreen');
 }
 
 function buildConjugationTable(tense) {
@@ -547,6 +685,224 @@ function generate() {
   document.getElementById("conjugationsTitle").textContent = `${tense} Tense Conjugations`;
   document.getElementById("conjugationsExampleVerb").style.display = "none";
   document.getElementById("conjugationsTableContainer").innerHTML = buildConjugationTable(tense);
+}
+</script>
+
+<!-- Flash Cards Screen -->
+<div id="flashcardsScreen" class="screen">
+  <h1 style="color:#e0e0e0;">Flash Cards</h1>
+  <p style="margin:0 0 12px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:#8e8e93; text-decoration:none;">← Home</a></p>
+  <div class="fc-filters" id="fcFilters"></div>
+  <p class="fc-progress" id="fcProgress"></p>
+  <div class="fc-wrap" onclick="flipCard()">
+    <div class="fc-inner" id="fcInner">
+      <div class="fc-face fc-front">
+        <span class="fc-category" id="fcCatFront"></span>
+        <span class="fc-word" id="fcEnglish"></span>
+        <span class="fc-hint">Tap to reveal</span>
+      </div>
+      <div class="fc-face fc-back">
+        <span class="fc-category" id="fcCatBack"></span>
+        <span class="fc-word" id="fcGujarati"></span>
+      </div>
+    </div>
+  </div>
+  <div class="fc-nav">
+    <button onclick="prevCard()" style="background:#2c2c2e; border:1px solid #48484a; color:#f0f0f0;">← Prev</button>
+    <button onclick="nextCard()" style="background:#2c2c2e; border:1px solid #48484a; color:#f0f0f0;">Next →</button>
+  </div>
+</div>
+
+<script>
+const flashcards = [
+  // Prepositions
+  { en: "in / inside",       gu: "māṃ / andar",        category: "Preposition" },
+  { en: "on / on top of",    gu: "par / ūpar",          category: "Preposition" },
+  { en: "under",             gu: "nīche",               category: "Preposition" },
+  { en: "near",              gu: "pāse",                category: "Preposition" },
+  { en: "far",               gu: "dūr",                 category: "Preposition" },
+  { en: "with",              gu: "sāthe",               category: "Preposition" },
+  { en: "without",           gu: "vagar",               category: "Preposition" },
+  { en: "before",            gu: "pahelāṃ",             category: "Preposition" },
+  { en: "after",             gu: "pachī",               category: "Preposition" },
+  { en: "between",           gu: "vacce",             category: "Preposition" },
+  { en: "behind",            gu: "pāchaḷ",             category: "Preposition" },
+  { en: "in front of",       gu: "sāme",                category: "Preposition" },
+  { en: "from",              gu: "thī",                 category: "Preposition" },
+  { en: "towards",           gu: "taraf",               category: "Preposition" },
+  { en: "for",               gu: "māṭe",                category: "Preposition" },
+  { en: "about",             gu: "vīṣe",                category: "Preposition" },
+  { en: "until",             gu: "sudhī",               category: "Preposition" },
+  { en: "because of",        gu: "kāraṇe",              category: "Preposition" },
+  { en: "instead of",        gu: "badhamāṃ",            category: "Preposition" },
+  { en: "through",           gu: "māṃ thī",             category: "Preposition" },
+  // Common
+  { en: "yes",               gu: "hā",                  category: "Common" },
+  { en: "no",                gu: "nā",                  category: "Common" },
+  { en: "please",            gu: "maherbānī karīne",    category: "Common" },
+  { en: "thank you",         gu: "ābhār",               category: "Common" },
+  { en: "sorry",             gu: "māf karjō",           category: "Common" },
+  { en: "okay / fine",       gu: "ṭhīk chhe",           category: "Common" },
+  { en: "let's go",          gu: "cālō",                category: "Common" },
+  { en: "what",              gu: "shũ",                 category: "Common" },
+  { en: "where",             gu: "kyāṃ",                category: "Common" },
+  { en: "when",              gu: "kyāre",               category: "Common" },
+  { en: "why",               gu: "kem",                 category: "Common" },
+  { en: "how",               gu: "kēvī rīte",           category: "Common" },
+  { en: "how much / many",   gu: "ketlũ / ketlā",       category: "Common" },
+  { en: "who",               gu: "koṇ",                 category: "Common" },
+  { en: "here",              gu: "ahī",                 category: "Common" },
+  { en: "there",             gu: "tyāṃ",                category: "Common" },
+  // Time
+  { en: "today",             gu: "āje",                 category: "Time" },
+  { en: "tomorrow",          gu: "kāle",                category: "Time" },
+  { en: "yesterday",         gu: "gael kāle",           category: "Time" },
+  { en: "now",               gu: "hāmṇā",               category: "Time" },
+  { en: "later",             gu: "pachī",               category: "Time" },
+  { en: "always",            gu: "hameshā",             category: "Time" },
+  { en: "never",             gu: "kyārey nahi",         category: "Time" },
+  { en: "sometimes",         gu: "kyārek",              category: "Time" },
+  { en: "morning",           gu: "savār",               category: "Time" },
+  { en: "evening",           gu: "sāṃj",                category: "Time" },
+  { en: "night",             gu: "rāt",                 category: "Time" },
+  { en: "day",               gu: "din",                 category: "Time" },
+  { en: "week",              gu: "aṭhvāḍiũ",            category: "Time" },
+  { en: "month",             gu: "mahīnō",              category: "Time" },
+  { en: "year",              gu: "varas",               category: "Time" },
+  // Family
+  { en: "mother",            gu: "mā",                  category: "Family" },
+  { en: "father",            gu: "bāp",                 category: "Family" },
+  { en: "brother",           gu: "bhāī",                category: "Family" },
+  { en: "sister",            gu: "bhen",                category: "Family" },
+  { en: "son",               gu: "dikrō",               category: "Family" },
+  { en: "daughter",          gu: "dikrī",               category: "Family" },
+  { en: "grandfather (dad's side)", gu: "dādā",         category: "Family" },
+  { en: "grandmother (dad's side)", gu: "dādī",         category: "Family" },
+  { en: "grandfather (mom's side)", gu: "nānā",         category: "Family" },
+  { en: "grandmother (mom's side)", gu: "nānī",         category: "Family" },
+  { en: "husband",           gu: "pati",                category: "Family" },
+  { en: "wife",              gu: "patnī",               category: "Family" },
+  { en: "friend",            gu: "dōst",                category: "Family" },
+  // Adjectives
+  { en: "good",              gu: "sārũ",                category: "Adjective" },
+  { en: "bad",               gu: "kharāb",              category: "Adjective" },
+  { en: "big",               gu: "moṭũ",                category: "Adjective" },
+  { en: "small",             gu: "nānũ",                category: "Adjective" },
+  { en: "hot",               gu: "garam",               category: "Adjective" },
+  { en: "cold",              gu: "ṭhaṇḍũ",              category: "Adjective" },
+  { en: "fast",              gu: "vehel / jhapāṭhābhand", category: "Adjective" },
+  { en: "slow",              gu: "dhīmũ",               category: "Adjective" },
+  { en: "new",               gu: "navũ",                category: "Adjective" },
+  { en: "old",               gu: "jūnũ",                category: "Adjective" },
+  { en: "happy",             gu: "khush",               category: "Adjective" },
+  { en: "sad",               gu: "dukhī",               category: "Adjective" },
+  { en: "tired",             gu: "thākēlũ",             category: "Adjective" },
+  { en: "hungry",            gu: "bhūkhyũ",             category: "Adjective" },
+  { en: "thirsty",           gu: "tarasyũ",               category: "Adjective" },
+  { en: "beautiful",         gu: "sundar",              category: "Adjective" },
+  { en: "difficult",         gu: "agharam",             category: "Adjective" },
+  { en: "easy",              gu: "sahel",               category: "Adjective" },
+  // Colors
+  { en: "red",               gu: "lāl",                 category: "Color" },
+  { en: "blue",              gu: "nīlũ",                category: "Color" },
+  { en: "green",             gu: "līlũ",                category: "Color" },
+  { en: "yellow",            gu: "pīḷũ",                category: "Color" },
+  { en: "black",             gu: "kāḷũ",                category: "Color" },
+  { en: "white",             gu: "dhōḷũ",               category: "Color" },
+  { en: "orange",            gu: "nāraṃgī",             category: "Color" },
+  { en: "purple",            gu: "jāṃblī",             category: "Color" },
+  { en: "pink",              gu: "gulābī",              category: "Color" },
+  { en: "brown",             gu: "bhūrũ",               category: "Color" },
+  // Places / Nouns
+  { en: "house / home",      gu: "ghar",                category: "Noun" },
+  { en: "market",            gu: "bājār",               category: "Noun" },
+  { en: "school",            gu: "shāḷā",               category: "Noun" },
+  { en: "hospital",          gu: "dāvākhānũ",           category: "Noun" },
+  { en: "temple",            gu: "mandir",              category: "Noun" },
+  { en: "road / street",     gu: "rōḍ / rastō",         category: "Noun" },
+  { en: "water",             gu: "pāṇī",                category: "Noun" },
+  { en: "food",              gu: "khāṇũ",               category: "Noun" },
+  { en: "money",             gu: "paise",               category: "Noun" },
+  { en: "time",              gu: "samay / vakhat",      category: "Noun" },
+  { en: "work",              gu: "kām",                 category: "Noun" },
+  { en: "book",              gu: "pustak",             category: "Noun" },
+  { en: "phone",             gu: "fōn",                 category: "Noun" },
+  { en: "car",               gu: "gāḍī",                category: "Noun" },
+];
+
+const fcCategories = [...new Set(flashcards.map(c => c.category))];
+let fcActiveCategories = new Set(fcCategories);
+let fcDeck = [];
+let fcIndex = 0;
+
+function initFlashcards() {
+  // Reset CSS vars to default purple for flashcard screen
+  const root = document.documentElement;
+  root.style.setProperty('--color-bg', '#f0f4ff');
+  root.style.setProperty('--color-primary', '#4a3f8f');
+  root.style.setProperty('--color-primary-hover', '#6b5ebd');
+  root.style.setProperty('--color-border', '#c5b8f5');
+  root.style.setProperty('--color-border-light', '#e0d9ff');
+  root.style.setProperty('--color-table-even', '#f7f4ff');
+  root.style.setProperty('--color-secondary-hover', '#ede9ff');
+  root.style.setProperty('--color-shadow', 'rgba(74,63,143,0.15)');
+
+  // Build filter buttons
+  const container = document.getElementById('fcFilters');
+  container.innerHTML = '';
+  fcCategories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'fc-filter-btn active';
+    btn.textContent = cat;
+    btn.onclick = () => toggleFcCategory(cat, btn);
+    container.appendChild(btn);
+  });
+
+  buildDeck();
+}
+
+function toggleFcCategory(cat, btn) {
+  if (fcActiveCategories.has(cat)) {
+    if (fcActiveCategories.size === 1) return; // keep at least one
+    fcActiveCategories.delete(cat);
+    btn.classList.remove('active');
+  } else {
+    fcActiveCategories.add(cat);
+    btn.classList.add('active');
+  }
+  buildDeck();
+}
+
+function buildDeck() {
+  fcDeck = flashcards
+    .filter(c => fcActiveCategories.has(c.category))
+    .sort(() => Math.random() - 0.5);
+  fcIndex = 0;
+  renderFlashcard();
+}
+
+function renderFlashcard() {
+  const card = fcDeck[fcIndex];
+  document.getElementById('fcCatFront').textContent = card.category;
+  document.getElementById('fcCatBack').textContent = card.category;
+  document.getElementById('fcEnglish').textContent = card.en;
+  document.getElementById('fcGujarati').textContent = card.gu;
+  document.getElementById('fcProgress').textContent = `${fcIndex + 1} / ${fcDeck.length}`;
+  document.getElementById('fcInner').classList.remove('flipped');
+}
+
+function flipCard() {
+  document.getElementById('fcInner').classList.toggle('flipped');
+}
+
+function nextCard() {
+  fcIndex = (fcIndex + 1) % fcDeck.length;
+  renderFlashcard();
+}
+
+function prevCard() {
+  fcIndex = (fcIndex - 1 + fcDeck.length) % fcDeck.length;
+  renderFlashcard();
 }
 </script>
 
