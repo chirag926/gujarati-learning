@@ -435,7 +435,7 @@ const persons = [
   "They"
 ];
 
-const tenses = ["Simple Present", "Continuous Present", "Simple Past", "Continuous Past", "Simple Future", "Continuous Future", "Perfect Past", "Perfect Present", "Perfect Future"];
+const tenses = ["Simple Present", "Continuous Present", "Simple Past", "Continuous Past", "Imperfect", "Simple Future", "Continuous Future", "Perfect Past", "Perfect Present", "Perfect Future"];
 
 const conjugations = {
   "Simple Present": {
@@ -459,7 +459,7 @@ const conjugations = {
     col3: "Example",
     note: "Complete Action verbs agree with the doer of the action.\nIncomplete Action verbs agree with the object.\nPronouns depend on type of Verb.",
     rows: [
-      { col1: "Masculine",     col2: "-ō, hatō",    col3: "karyōtō" },
+      { col1: "Masculine",     col2: "-yō, hatō",   col3: "karyōtō" },
       { col1: "Feminine",      col2: "-ī, hatī",    col3: "karītī" },
       { col1: "Neutral",       col2: "-yũ, hatũ",   col3: "karyũtũ" },
       { col1: "Plural/Formal", col2: "-yā, hatā",   col3: "karyātā" },
@@ -490,6 +490,18 @@ const conjugations = {
       { col1: "Feminine",      col2: "-tī, hatī",   col3: "kartītī" },
       { col1: "Neutral",       col2: "-tũ, hatũ",   col3: "kartũtũ" },
       { col1: "Plural/Formal", col2: "-tā, hatā",   col3: "kartātā" },
+    ],
+  },
+  "Imperfect": {
+    col1: "Gender",
+    col2: "Suffix",
+    col3: "Example (karvānũ)",
+    note: "Simple Past Tense Verb Conjugation + Simple Present Tense Word.<br>Tense Word will be \"che\" for Incomplete Action Verbs. Complete Action verbs conjugate hōvānũ according to the Pronoun.",
+    rows: [
+      { col1: "Masculine",     col2: "-yō",  col3: "karyō" },
+      { col1: "Feminine",      col2: "-ī",   col3: "karī"  },
+      { col1: "Neutral",       col2: "-yũ",  col3: "karyũ" },
+      { col1: "Plural/Formal", col2: "-yā",  col3: "karyā" },
     ],
   },
   "Perfect Past": {
@@ -633,7 +645,7 @@ function toggleHint() {
 }
 
 function showPronounScreen() {
-  if (currentTense === 'Simple Past' || currentTense === 'Continuous Past') {
+  if (currentTense === 'Simple Past' || currentTense === 'Continuous Past' || currentTense === 'Imperfect') {
     showScreen('pronounPastScreen');
   } else if (currentTense === 'Perfect Past' || currentTense === 'Perfect Present' || currentTense === 'Perfect Future') {
     showScreen('pronounPerfectScreen');
@@ -663,6 +675,7 @@ function generate() {
     'Continuous Past':    { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
     'Simple Future':      { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
     'Continuous Future':  { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Imperfect':          { bg: '#fdf4ff', primary: '#7e22ce', hover: '#9333ea', border: '#d8b4fe', borderLight: '#ede9fe', tableEven: '#faf5ff', secondaryHover: '#f3e8ff', shadow: 'rgba(126, 34, 206, 0.15)' },
     'Perfect Past':       { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
     'Perfect Present':    { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
     'Perfect Future':     { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
@@ -756,7 +769,7 @@ const flashcards = [
   { en: "with whom",                      gu: "kōnī sāthe",                         category: "Common" },
   { en: "where",                          gu: "kyāṃ (question) / jyāṃ (answer)",    category: "Common" },
   { en: "how (verbs)",                    gu: "kevī rīte",                          category: "Common" },
- { en: "how (nouns)",                     gu: "kevō, kevī, kevũ, kevā",             category: "Common" },
+  { en: "how (nouns)",                     gu: "kevō, kevī, kevũ, kevā",             category: "Common" },
   { en: "how much / many",                gu: "ketlō / ketlī / ketlũ / ketlā",      category: "Common" },
   { en: "which",                          gu: "kayō / kayī / kayũ / kayā",          category: "Common" },
   { en: "for what",                       gu: "senā māte",                          category: "Common" },
@@ -839,6 +852,16 @@ const flashcards = [
   { en: "book",                           gu: "pustak",                  category: "Noun" },
   { en: "phone",                          gu: "fōn",                     category: "Noun" },
   { en: "car",                            gu: "gāḍī",                    category: "Noun" },
+  // Possessive
+  { en: "my / mine",                       gu: "marō / marī / marũ / marā",                                             category: "Possessive" },
+  { en: "your / yours (plural)",           gu: "tamārā badhā'nō / tamārā badhā'nī / tamārā badhā'nũ / tamārā badhā'nā", category: "Possessive" },
+  { en: "your / yours (informal)",         gu: "tārō / tārī / tārũ / tārā",                                             category: "Possessive" },
+  { en: "your / yours (formal)",           gu: "tamārō / tamārī / tamārũ / tamārā",                                     category: "Possessive" },
+  { en: "his / her (informal)",            gu: "enō / enī / enũ / enā",                                                 category: "Possessive" },
+  { en: "his / her (formal)",              gu: "emnō / emnī / emnũ / emnā",                                             category: "Possessive" },
+  { en: "our (exclusive)",                 gu: "amārō / amārī / amārũ / amārā",                                         category: "Possessive" },
+  { en: "our (inclusive)",                 gu: "āpḍō / āpḍī / āpḍũ / āpḍā",                                             category: "Possessive" },
+  { en: "their",                           gu: "e badhā'nō / e badhā'nī / e badhā'nũ / e badhā'nā",                     category: "Possessive" },
 ];
 
 const fcCategories = [...new Set(flashcards.map(c => c.category))];
