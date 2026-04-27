@@ -335,6 +335,33 @@
   <button class="secondary-btn" onclick="showScreen('mainScreen')" style="margin-top:20px;">← Back</button>
 </div>
 
+<div id="pronounContinuousPastScreen" class="screen">
+  <h1>Pronouns (Continuous Past)</h1>
+
+  <p style="font-size:16px; color:#555; margin: 16px auto 6px; max-width:400px; text-align:left;">Continuous Past verbs always agree with the doer of the action. Use these pronouns for all verbs.</p>
+
+  <table class="pronoun-table">
+    <thead>
+      <tr>
+        <th>English</th>
+        <th>Romanized Gujarati</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>I</td><td>Hũ</td></tr>
+      <tr><td>You (informal)</td><td>Tũ</td></tr>
+      <tr><td>You (formal)</td><td>Tame</td></tr>
+      <tr><td>You all</td><td>Tame / Tame badhā</td></tr>
+      <tr><td>He / She</td><td>E</td></tr>
+      <tr><td>We (exclusive)</td><td>Ame</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
+      <tr><td>They</td><td>E badhā</td></tr>
+    </tbody>
+  </table>
+
+  <button class="secondary-btn" onclick="showScreen('mainScreen')" style="margin-top:20px;">← Back</button>
+</div>
+
 <div id="pronounPerfectScreen" class="screen">
   <h1>Pronouns (Perfect Tense)</h1>
 
@@ -645,7 +672,9 @@ function toggleHint() {
 }
 
 function showPronounScreen() {
-  if (currentTense === 'Simple Past' || currentTense === 'Continuous Past' || currentTense === 'Imperfect') {
+  if (currentTense === 'Continuous Past') {
+    showScreen('pronounContinuousPastScreen');
+  } else if (currentTense === 'Simple Past' || currentTense === 'Imperfect') {
     showScreen('pronounPastScreen');
   } else if (currentTense === 'Perfect Past' || currentTense === 'Perfect Present' || currentTense === 'Perfect Future') {
     showScreen('pronounPerfectScreen');
