@@ -246,6 +246,7 @@
   <h1>Gujarati Practice</h1>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
     <button onclick="showScreen('mainScreen')">Verb / Tense Practice</button>
+    <button onclick="startVerbCycle()">Verb Cycle</button>
     <button onclick="showScreen('flashcardsScreen'); initFlashcards();">Flash Cards</button>
   </div>
 </div>
@@ -256,8 +257,8 @@
   <button onclick="generate()">Generate Prompt</button>
   <div class="card" id="output"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-    <button id="showPronounsBtn" class="secondary-btn" onclick="showPronounScreen()" style="display:none;">Show Pronouns Table</button>
-    <button id="showConjugationsBtn" class="secondary-btn" onclick="showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
+    <button id="showPronounsBtn" class="secondary-btn" onclick="previousScreen='mainScreen'; showPronounScreen()" style="display:none;">Show Pronouns Table</button>
+    <button id="showConjugationsBtn" class="secondary-btn" onclick="previousScreen='mainScreen'; showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
     <button id="hintBtn" class="secondary-btn" onclick="toggleHint()" style="display:none;">Show Verb Hint</button>
   </div>
 </div>
@@ -282,7 +283,7 @@
       <tr><td>They</td><td>E badhā</td></tr>
     </tbody>
   </table>
-  <button class="secondary-btn" onclick="showScreen('mainScreen')">← Back</button>
+  <button class="secondary-btn" onclick="goBack()">← Back</button>
 </div>
 
 <div id="pronounPastScreen" class="screen">
@@ -332,7 +333,7 @@
     </tbody>
   </table>
 
-  <button class="secondary-btn" onclick="showScreen('mainScreen')" style="margin-top:20px;">← Back</button>
+  <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
 </div>
 
 <div id="pronounContinuousPastScreen" class="screen">
@@ -359,7 +360,7 @@
     </tbody>
   </table>
 
-  <button class="secondary-btn" onclick="showScreen('mainScreen')" style="margin-top:20px;">← Back</button>
+  <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
 </div>
 
 <div id="pronounPerfectScreen" class="screen">
@@ -385,14 +386,14 @@
     </tbody>
   </table>
 
-  <button class="secondary-btn" onclick="showScreen('mainScreen')" style="margin-top:20px;">← Back</button>
+  <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
 </div>
 
 <div id="conjugationsScreen" class="screen">
   <h1 id="conjugationsTitle">Conjugations</h1>
   <p id="conjugationsExampleVerb" style="font-size:18px; color:var(--color-primary); margin: 0 0 4px;">Example verb: <b>karvānũ</b> (to do)</p>
   <div id="conjugationsTableContainer"></div>
-  <button class="secondary-btn" onclick="showScreen('mainScreen')">← Back</button>
+  <button class="secondary-btn" onclick="goBack()">← Back</button>
 </div>
 
 <script>
@@ -446,6 +447,8 @@ const verbs = [
   { en: "to organize",         gu: "gōṭhvānũ",        type: "Incomplete", objects: ["party", "clothes"] },
   { en: "to count",            gu: "gaṇvānũ",         type: "Incomplete", objects: ["money", "dogs", "cars"] },
   { en: "to forget",           gu: "bhūlvānũ",        type: "Complete",   objects: [] },
+  { en: "to pay attention",    gu: "dhyān āpvānũ",    type: "Complete",   objects: [] },
+  { en: "to arrive",           gu: "pōn̄cvānũ",        type: "Complete",   objects: [] },
 ];
 
 const persons = [
@@ -671,6 +674,12 @@ function toggleHint() {
   btn.textContent = showing ? 'Show Verb Hint' : 'Hide Verb Hint';
 }
 
+let previousScreen = 'mainScreen';
+
+function goBack() {
+  showScreen(previousScreen);
+}
+
 function showPronounScreen() {
   if (currentTense === 'Continuous Past') {
     showScreen('pronounContinuousPastScreen');
@@ -730,7 +739,128 @@ function generate() {
   document.getElementById("conjugationsExampleVerb").style.display = "none";
   document.getElementById("conjugationsTableContainer").innerHTML = buildConjugationTable(tense);
 }
+
+// ── Verb Cycle ────────────────────────────────────────────────
+let vcDeck = [];
+let vcIndex = 0;
+let vcVerb = null;
+let vcTense = '';
+let vcPerson = '';
+let vcObject = '';
+let vcShowingHint = false;
+
+function startVerbCycle() {
+  // Shuffle a copy of all verbs
+  vcDeck = [...verbs].sort(() => Math.random() - 0.5);
+  vcIndex = 0;
+  showScreen('verbCycleScreen');
+  vcRender();
+}
+
+function vcRender() {
+  if (vcIndex >= vcDeck.length) {
+    document.getElementById('vcOutput').innerHTML =
+      '<b>All ' + vcDeck.length + ' verbs done!</b><br><br>Press "Next Verb" to shuffle and restart.';
+    document.getElementById('vcProgress').textContent = vcDeck.length + ' / ' + vcDeck.length;
+    document.getElementById('vcShowPronounsBtn').style.display = 'none';
+    document.getElementById('vcShowConjugationsBtn').style.display = 'none';
+    document.getElementById('vcHintBtn').style.display = 'none';
+    return;
+  }
+
+  vcVerb   = vcDeck[vcIndex];
+  vcTense  = random(tenses);
+  vcPerson = random(persons);
+  vcObject = (vcVerb.objects && vcVerb.objects.length > 0 && Math.random() < 0.5) ? random(vcVerb.objects) : '';
+  vcShowingHint = false;
+
+  // Apply tense colour scheme
+  const tenseSchemes = {
+    'Simple Present':     { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39,103,73,0.15)' },
+    'Continuous Present': { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39,103,73,0.15)' },
+    'Simple Past':        { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74,63,143,0.15)' },
+    'Continuous Past':    { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74,63,143,0.15)' },
+    'Simple Future':      { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194,65,12,0.15)' },
+    'Continuous Future':  { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194,65,12,0.15)' },
+    'Imperfect':          { bg: '#fdf4ff', primary: '#7e22ce', hover: '#9333ea', border: '#d8b4fe', borderLight: '#ede9fe', tableEven: '#faf5ff', secondaryHover: '#f3e8ff', shadow: 'rgba(126,34,206,0.15)' },
+    'Perfect Past':       { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74,63,143,0.15)' },
+    'Perfect Present':    { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39,103,73,0.15)' },
+    'Perfect Future':     { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194,65,12,0.15)' },
+  };
+  const scheme = tenseSchemes[vcTense] || tenseSchemes['Simple Past'];
+  const root = document.documentElement;
+  root.style.setProperty('--color-bg', scheme.bg);
+  root.style.setProperty('--color-primary', scheme.primary);
+  root.style.setProperty('--color-primary-hover', scheme.hover);
+  root.style.setProperty('--color-border', scheme.border);
+  root.style.setProperty('--color-border-light', scheme.borderLight);
+  root.style.setProperty('--color-table-even', scheme.tableEven);
+  root.style.setProperty('--color-secondary-hover', scheme.secondaryHover);
+  root.style.setProperty('--color-shadow', scheme.shadow);
+
+  document.getElementById('vcProgress').textContent = (vcIndex + 1) + ' / ' + vcDeck.length;
+  vcRenderOutput(false);
+
+  document.getElementById('vcShowPronounsBtn').style.display = '';
+  document.getElementById('vcShowConjugationsBtn').style.display = '';
+  document.getElementById('vcHintBtn').style.display = '';
+  document.getElementById('vcHintBtn').textContent = 'Show Verb Hint';
+  document.getElementById('vcShowConjugationsBtn').textContent = 'Example ' + vcTense + ' Tense Conjugations';
+  document.getElementById('conjugationsTitle').textContent = vcTense + ' Tense Conjugations';
+  document.getElementById('conjugationsExampleVerb').style.display = 'none';
+  document.getElementById('conjugationsTableContainer').innerHTML = buildConjugationTable(vcTense);
+}
+
+function vcRenderOutput(showHint) {
+  const hint = (showHint && vcVerb.gu)
+    ? '<br><span style="color:#888; font-size:0.85em;">' + vcVerb.gu + ' &mdash; ' + vcVerb.type + '</span>'
+    : '';
+  const objectLine = vcObject ? '<br><br>Object: <b>' + vcObject + '</b>' : '';
+  document.getElementById('vcOutput').innerHTML =
+    'Say in Gujarati:<br><br>' +
+    'Pronoun: <b>' + vcPerson + '</b><br><br>' +
+    'Tense: <b>' + vcTense + '</b><br><br>' +
+    'Verb: <b>' + vcVerb.en + '</b>' + hint + objectLine;
+}
+
+function vcToggleHint() {
+  const btn = document.getElementById('vcHintBtn');
+  vcShowingHint = btn.textContent === 'Hide Verb Hint' ? false : true;
+  vcRenderOutput(vcShowingHint);
+  btn.textContent = vcShowingHint ? 'Hide Verb Hint' : 'Show Verb Hint';
+}
+
+function vcShowPronouns() {
+  currentTense = vcTense;
+  previousScreen = 'verbCycleScreen';
+  showPronounScreen();
+}
+
+function vcNext() {
+  if (vcIndex >= vcDeck.length) {
+    // Restart with a new shuffle
+    vcDeck = [...verbs].sort(() => Math.random() - 0.5);
+    vcIndex = 0;
+  } else {
+    vcIndex++;
+  }
+  vcRender();
+}
 </script>
+
+<!-- Verb Cycle Screen -->
+<div id="verbCycleScreen" class="screen">
+  <h1>Verb Cycle</h1>
+  <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
+  <p class="fc-progress" id="vcProgress" style="color:var(--color-primary); font-size:16px; margin:6px 0 0;"></p>
+  <div class="card" id="vcOutput"></div>
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+    <button onclick="vcNext()">Next Verb →</button>
+    <button id="vcShowPronounsBtn" class="secondary-btn" onclick="vcShowPronouns()" style="display:none;">Show Pronouns Table</button>
+    <button id="vcShowConjugationsBtn" class="secondary-btn" onclick="previousScreen='verbCycleScreen'; showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
+    <button id="vcHintBtn" class="secondary-btn" onclick="vcToggleHint()" style="display:none;">Show Verb Hint</button>
+  </div>
+</div>
 
 <!-- Flash Cards Screen -->
 <div id="flashcardsScreen" class="screen">
