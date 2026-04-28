@@ -444,7 +444,7 @@ const verbs = [
   { en: "to dance",            gu: "nācvānũ",         type: "Complete",   objects: [] },
   { en: "to meet",             gu: "maḷvānũ",         type: "Incomplete", objects: ["Chirag", "Grandma", "Grandpa"] },
   { en: "to rest",             gu: "ārām karvānũ",    type: "Incomplete", objects: [] },
-  { en: "to organize",         gu: "gōṭhvānũ",        type: "Incomplete", objects: ["party", "clothes"] },
+  { en: "to organize",         gu: "gōṭhvānũ",        type: "Incomplete", objects: ["stuff", "clothes", "notes"] },
   { en: "to count",            gu: "gaṇvānũ",         type: "Incomplete", objects: ["money", "dogs", "cars"] },
   { en: "to forget",           gu: "bhūlvānũ",        type: "Complete",   objects: [] },
   { en: "to pay attention",    gu: "dhyān āpvānũ",    type: "Complete",   objects: [] },
@@ -1075,6 +1075,16 @@ function buildDeck() {
 }
 
 function renderFlashcard() {
+  if (fcIndex >= fcDeck.length) {
+    document.getElementById('fcProgress').textContent = fcDeck.length + ' / ' + fcDeck.length;
+    document.getElementById('fcCatFront').textContent = '';
+    document.getElementById('fcCatBack').textContent = '';
+    document.getElementById('fcEnglish').textContent = 'All ' + fcDeck.length + ' cards done!';
+    document.getElementById('fcGujarati').textContent = '';
+    document.getElementById('fcInner').classList.remove('flipped');
+    document.querySelector('.fc-hint').style.visibility = 'hidden';
+    return;
+  }
   const card = fcDeck[fcIndex];
   document.getElementById('fcCatFront').textContent = card.category;
   document.getElementById('fcCatBack').textContent = card.category;
@@ -1082,20 +1092,28 @@ function renderFlashcard() {
   document.getElementById('fcGujarati').textContent = card.gu;
   document.getElementById('fcProgress').textContent = `${fcIndex + 1} / ${fcDeck.length}`;
   document.getElementById('fcInner').classList.remove('flipped');
+  document.querySelector('.fc-hint').style.visibility = 'visible';
 }
 
 function flipCard() {
-  document.getElementById('fcInner').classList.toggle('flipped');
+  if (fcIndex < fcDeck.length)
+    document.getElementById('fcInner').classList.toggle('flipped');
 }
 
 function nextCard() {
-  fcIndex = (fcIndex + 1) % fcDeck.length;
-  renderFlashcard();
+  if (fcIndex >= fcDeck.length) {
+    buildDeck(); // reshuffle and restart
+  } else {
+    fcIndex++;
+    renderFlashcard();
+  }
 }
 
 function prevCard() {
-  fcIndex = (fcIndex - 1 + fcDeck.length) % fcDeck.length;
-  renderFlashcard();
+  if (fcIndex > 0) {
+    fcIndex--;
+    renderFlashcard();
+  }
 }
 </script>
 
