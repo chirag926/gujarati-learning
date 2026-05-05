@@ -238,6 +238,65 @@
     .fc-filter-btn.active:hover {
       background: #6e6eff;
     }
+    /* ── Vocab Screen ──────────────────────────────── */
+    .vocab-search {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 2px solid var(--color-border);
+      border-radius: 10px;
+      background: #fff;
+      color: #1a1a2e;
+      box-sizing: border-box;
+      margin: 0 auto 12px;
+      display: block;
+      outline: none;
+      box-shadow: 0 2px 8px var(--color-shadow);
+    }
+    .vocab-search:focus {
+      border-color: var(--color-primary);
+    }
+    .vocab-count {
+      font-size: 14px;
+      color: #888;
+      margin: 8px 0 6px;
+    }
+    .vocab-table-wrap {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--color-shadow);
+      border: 2px solid var(--color-border);
+      background: #fff;
+    }
+    .vocab-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .vocab-table td {
+      padding: 10px 14px;
+      font-size: 15px;
+      border-top: 1px solid var(--color-border-light);
+      text-align: left;
+      vertical-align: top;
+      width: 50%;
+    }
+    .vocab-table tr:first-child td {
+      border-top: none;
+    }
+    .vocab-table tr:nth-child(even) td {
+      background-color: var(--color-table-even);
+    }
+    .vocab-en {
+      color: #1a1a2e;
+    }
+    .vocab-gu {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body class="home">
@@ -248,6 +307,7 @@
     <button onclick="showScreen('mainScreen')">Verb / Tense Practice</button>
     <button onclick="startVerbCycle()">Verb Cycle</button>
     <button onclick="showScreen('flashcardsScreen'); initFlashcards();">Flash Cards</button>
+    <button onclick="showScreen('vocabScreen'); initVocab();">Vocabulary List</button>
   </div>
 </div>
 
@@ -922,6 +982,18 @@ function vcNext() {
   </div>
 </div>
 
+<!-- Vocab Screen -->
+<div id="vocabScreen" class="screen">
+  <h1>Vocabulary</h1>
+  <p style="margin:0 0 12px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
+  <input type="text" class="vocab-search" id="vocabSearch" placeholder="Search words..." oninput="renderVocab()">
+  <div class="fc-filters" id="vocabFilters"></div>
+  <p class="vocab-count" id="vocabCount"></p>
+  <div class="vocab-table-wrap">
+    <table class="vocab-table"><tbody id="vocabTbody"></tbody></table>
+  </div>
+</div>
+
 <script>
 const flashcards = [
   // Prepositions
@@ -1174,6 +1246,49 @@ function prevCard() {
     fcIndex--;
     renderFlashcard();
   }
+}
+
+// ── Vocab Screen ──────────────────────────────────────────
+let vocabActiveCategories = new Set();
+
+function initVocab() {
+  vocabActiveCategories = new Set(fcCategories);
+  const container = document.getElementById('vocabFilters');
+  container.innerHTML = '';
+  fcCategories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'fc-filter-btn active';
+    btn.textContent = cat;
+    btn.onclick = () => toggleVocabCategory(cat, btn);
+    container.appendChild(btn);
+  });
+  document.getElementById('vocabSearch').value = '';
+  renderVocab();
+}
+
+function toggleVocabCategory(cat, btn) {
+  if (vocabActiveCategories.has(cat)) {
+    if (vocabActiveCategories.size === 1) return;
+    vocabActiveCategories.delete(cat);
+    btn.classList.remove('active');
+  } else {
+    vocabActiveCategories.add(cat);
+    btn.classList.add('active');
+  }
+  renderVocab();
+}
+
+function renderVocab() {
+  const query = document.getElementById('vocabSearch').value.toLowerCase();
+  const filtered = flashcards.filter(c =>
+    vocabActiveCategories.has(c.category) &&
+    (c.en.toLowerCase().includes(query) || c.gu.toLowerCase().includes(query))
+  );
+  document.getElementById('vocabCount').textContent =
+    filtered.length + ' word' + (filtered.length !== 1 ? 's' : '');
+  document.getElementById('vocabTbody').innerHTML = filtered.map(c =>
+    '<tr><td class="vocab-en">' + c.en + '</td><td class="vocab-gu">' + c.gu + '</td></tr>'
+  ).join('');
 }
 </script>
 
