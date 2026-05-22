@@ -304,10 +304,10 @@
 <div id="homeScreen" class="screen active">
   <h1>Gujarati Practice</h1>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-    <button onclick="showScreen('mainScreen')">Random Practice</button>
+    <button onclick="startRandomPractice()">Random Practice</button>
     <button onclick="startVerbCycle()">Verb/Tense Practice</button>
     <button onclick="startLWNC()">Likes/Wants/Needs</button>
-    <button onclick="startCans()">Can's</button>
+    <button onclick="startCombined()">Can's &amp; What If's</button>
     <button onclick="showScreen('flashcardsScreen'); initFlashcards();">Flash Cards</button>
     <button onclick="showScreen('vocabScreen'); initVocab();">Vocabulary List</button>
   </div>
@@ -557,7 +557,7 @@ const tenseSamples = {
   'Perfect Past':       'e.g. "I had to eat food." or "I had to walk."',
   'Perfect Present':    'e.g. "I have to eat food." or "I have to walk."',
   'Perfect Future':     'e.g. "I will have to eat food." or "I will have to walk."',
-  'Imperfect Past':     'e.g. "I have ate food." or "I have walked."',
+  'Imperfect Past':     'e.g. "I had eaten food." or "I had walked."',
   'Imperfect Present':  'e.g. "I have eaten food." or "I have walked."',
   'Imperfect Future':   'e.g. "I will have eaten food." or "I will have walked."',
 };
@@ -689,6 +689,82 @@ const conjugations = {
       { col1: "Plural/Formal", col2: "-vānā, che/hase", col3: "karvānā che/hase" },
     ],
   },
+  "What If Simple Present": {
+    col1: "Pronoun",
+    col2: "Suffix",
+    col3: "Example (karvānũ)",
+    note: "Follows regular Simple Present conjugation rules — except the tense word (chũ/che/cho/chhe/chie) is dropped entirely.",
+    rows: [
+      { col1: "I",              col2: "-ũ",   col3: "Hũ karũ" },
+      { col1: "You informal",   col2: "-e",   col3: "Tũ kare" },
+      { col1: "You (formal)",   col2: "-o",   col3: "Tame karo" },
+      { col1: "You all",        col2: "-o",   col3: "Tame badhā karo" },
+      { col1: "He/She",         col2: "-e",   col3: "E kare" },
+      { col1: "We (exclusive)", col2: "-ie",  col3: "Ame karie" },
+      { col1: "We (inclusive)", col2: "-ie",  col3: "Āpḍe karie" },
+      { col1: "They",           col2: "-e",   col3: "E badhā kare" },
+    ],
+  },
+  "What If Simple Past": {
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Follows regular Simple Past conjugation rules — except the tense word is always \"hot\" for all genders (instead of hato/hati/hatũ/hatā).",
+    rows: [
+      { col1: "Masculine",     col2: "-yo, hot",  col3: "karyo hot" },
+      { col1: "Feminine",      col2: "-i, hot",   col3: "kari hot"  },
+      { col1: "Neutral",       col2: "-yũ, hot",  col3: "karyũ hot" },
+      { col1: "Plural/Formal", col2: "-yā, hot",  col3: "karyā hot" },
+    ],
+  },
+  "What If Continuous Past": {
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Follows regular Continuous Past conjugation rules — except the tense word is always \"hot\" for all genders (instead of hato/hati/hatũ/hatā). Verbs agree with the doer.",
+    rows: [
+      { col1: "Masculine",     col2: "-to, hot",  col3: "karto hot"  },
+      { col1: "Feminine",      col2: "-ti, hot",  col3: "karti hot"  },
+      { col1: "Neutral",       col2: "-tũ, hot",  col3: "kartũ hot"  },
+      { col1: "Plural/Formal", col2: "-tā, hot",  col3: "kartā hot"  },
+    ],
+  },
+  "What If Perfect Past": {
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Follows regular Perfect Past conjugation rules — except the tense word is always \"hot\" for all genders (instead of hato/hati/hatũ/hatā). Verbs agree with the object.",
+    rows: [
+      { col1: "Masculine",     col2: "-vāno, hot",  col3: "karvāno hot" },
+      { col1: "Feminine",      col2: "-vāni, hot",  col3: "karvāni hot" },
+      { col1: "Neutral",       col2: "-vānũ, hot",  col3: "karvānũ hot" },
+      { col1: "Plural/Formal", col2: "-vānā, hot",  col3: "karvānā hot" },
+    ],
+  },
+  "What If Perfect Present": {
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Follows regular Perfect Present conjugation rules — except the tense word is always \"hoy\" for all genders (instead of che). Verbs agree with the object.",
+    rows: [
+      { col1: "Masculine",     col2: "-vāno, hoy",  col3: "karvāno hoy" },
+      { col1: "Feminine",      col2: "-vāni, hoy",  col3: "karvāni hoy" },
+      { col1: "Neutral",       col2: "-vānũ, hoy",  col3: "karvānũ hoy" },
+      { col1: "Plural/Formal", col2: "-vānā, hoy",  col3: "karvānā hoy" },
+    ],
+  },
+  "What If Perfect Future": {
+    col1: "Gender",
+    col2: "Suffix and Tense Word",
+    col3: "Example",
+    note: "Follows regular Perfect Future conjugation rules — except the tense word is always \"hase\" for all genders. Verbs agree with the object.",
+    rows: [
+      { col1: "Masculine",     col2: "-vāno, hase",  col3: "karvāno hase" },
+      { col1: "Feminine",      col2: "-vāni, hase",  col3: "karvāni hase" },
+      { col1: "Neutral",       col2: "-vānũ, hase",  col3: "karvānũ hase" },
+      { col1: "Plural/Formal", col2: "-vānā, hase",  col3: "karvānā hase" },
+    ],
+  },
 };
 
 function showScreen(id) {
@@ -768,6 +844,19 @@ function buildConjugationTable(tense) {
     </table>`;
 }
 
+function buildWhatIfsConjugationTable(tense) {
+  const whatIfAlias = {
+    'Simple Present':    'What If Simple Present',
+    'Continuous Present':'What If Simple Present',
+    'Simple Past':       'What If Simple Past',
+    'Continuous Past':   'What If Continuous Past',
+    'Perfect Past':      'What If Perfect Past',
+    'Perfect Present':   'What If Perfect Present',
+    'Perfect Future':    'What If Perfect Future',
+  };
+  return buildConjugationTable(whatIfAlias[tense] || tense);
+}
+
 let currentVerb = '';
 let currentPerson = '';
 let currentTense = '';
@@ -814,6 +903,192 @@ function showPronounScreen() {
 
 function random(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function startRandomPractice() {
+  showScreen('randomScreen');
+  rpRender();
+}
+
+// ── Random Practice ───────────────────────────────────────────
+let rp_mode        = '';
+let rp_tense       = '';
+let rp_person      = '';
+let rp_verb        = null;
+let rp_category    = '';   // LWNC: 'Likes' / 'Wants' / 'Needs'
+let rp_objectType  = '';   // LWNC: 'verb' | 'noun'
+let rp_object      = null; // LWNC object (verb or noun)
+let rp_showingHint = false;
+
+function rpRender() {
+  rp_mode   = random(['verbTense', 'lwnc', 'cans', 'whatifs', 'vocab']);
+  rp_person = random(persons);
+  rp_showingHint = false;
+
+  if (rp_mode === 'verbTense') {
+    rp_tense = random(tenses);
+    rp_verb  = random(verbs);
+  } else if (rp_mode === 'lwnc') {
+    rp_category  = random(['Likes', 'Wants', 'Needs']);
+    const tensesForCat = rp_category === 'Likes' ? lwncLikesTenses
+                       : rp_category === 'Wants' ? lwncWantsTenses
+                       : lwncNeedsTenses;
+    rp_tense      = random(tensesForCat);
+    rp_objectType = Math.random() < 0.5 ? 'verb' : 'noun';
+    if (rp_objectType === 'verb') {
+      rp_object = random(verbs);
+    } else {
+      const nouns = flashcards.filter(c => c.category === 'Noun');
+      rp_object = random(nouns.length ? nouns : verbs);
+    }
+    rp_verb = rp_objectType === 'verb' ? rp_object : null;
+  } else if (rp_mode === 'cans') {
+    rp_tense = random(cansTenses);
+    rp_verb  = random(verbs);
+  } else if (rp_mode === 'whatifs') {
+    rp_tense = random(whatIfsTenses);
+    rp_verb  = random(verbs);
+  } else { // vocab
+    rp_object     = random(flashcards);
+    rp_objectType = 'vocab';
+    rp_verb       = null;
+    rp_tense      = '';
+    rp_person     = '';
+  }
+
+  const tenseSchemes = {
+    'Simple Present':     { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Simple Past':        { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Simple Future':      { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Continuous Past':    { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Continuous Present': { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Continuous Future':  { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Perfect Past':       { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Perfect Present':    { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Perfect Future':     { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+  };
+  const scheme = tenseSchemes[rp_tense] || tenseSchemes['Simple Past'];
+  const root = document.documentElement;
+  root.style.setProperty('--color-bg',             scheme.bg);
+  root.style.setProperty('--color-primary',         scheme.primary);
+  root.style.setProperty('--color-primary-hover',   scheme.hover);
+  root.style.setProperty('--color-border',          scheme.border);
+  root.style.setProperty('--color-border-light',    scheme.borderLight);
+  root.style.setProperty('--color-table-even',      scheme.tableEven);
+  root.style.setProperty('--color-secondary-hover', scheme.secondaryHover);
+  root.style.setProperty('--color-shadow',          scheme.shadow);
+
+  rpRenderOutput(false);
+
+  const subtitleEl = document.getElementById('rpSubtitle');
+  if (rp_mode === 'whatifs') {
+    subtitleEl.textContent = whatIfsTenseSamples[rp_tense] || '';
+    subtitleEl.style.display = '';
+  } else {
+    subtitleEl.style.display = 'none';
+  }
+
+  document.getElementById('rpShowPronounsBtn').style.display = rp_mode === 'vocab' ? 'none' : '';
+
+  const conjBtn = document.getElementById('rpShowConjugationsBtn');
+  if (rp_mode === 'verbTense') {
+    conjBtn.textContent = 'Example ' + rp_tense + ' Tense Conjugations';
+    document.getElementById('conjugationsTitle').textContent = rp_tense + ' Tense Conjugations';
+    document.getElementById('conjugationsExampleVerb').style.display = 'none';
+    document.getElementById('conjugationsTableContainer').innerHTML = buildConjugationTable(rp_tense);
+    conjBtn.style.display = '';
+  } else if (rp_mode === 'whatifs') {
+    conjBtn.textContent = 'Example ' + rp_tense + ' Tense Conjugations';
+    document.getElementById('conjugationsTitle').textContent = 'What If ' + rp_tense + ' Tense Conjugations';
+    document.getElementById('conjugationsExampleVerb').style.display = 'none';
+    document.getElementById('conjugationsTableContainer').innerHTML = buildWhatIfsConjugationTable(rp_tense);
+    conjBtn.style.display = '';
+  } else {
+    conjBtn.style.display = 'none';
+  }
+
+  const formulaBtn = document.getElementById('rpShowFormulaBtn');
+  if (rp_mode === 'lwnc') {
+    formulaBtn.textContent = 'Show ' + rp_tense + ' Formula';
+    document.getElementById('lwncFormulaTitle').textContent = rp_tense + ' ' + rp_category + ' Formula';
+    document.getElementById('lwncFormulaContainer').innerHTML = buildLwncFormula(rp_tense, rp_objectType, rp_category);
+    formulaBtn.style.display = '';
+  } else if (rp_mode === 'cans') {
+    formulaBtn.textContent = 'Show ' + rp_tense + ' Formula';
+    document.getElementById('cansFormulaTitle').textContent = rp_tense + ' Can Formula';
+    document.getElementById('cansFormulaContainer').innerHTML = buildCansFormula(rp_tense);
+    formulaBtn.style.display = '';
+  } else {
+    formulaBtn.style.display = 'none';
+  }
+
+  const hintLabel = rp_mode === 'vocab'                             ? 'Gujarati'
+                  : (rp_mode === 'lwnc' && rp_objectType === 'noun') ? 'Noun' : 'Verb';
+  document.getElementById('rpHintBtn').textContent = 'Show ' + hintLabel + ' Hint';
+  document.getElementById('rpHintBtn').style.display = '';
+}
+
+function rpRenderOutput(showHint) {
+  if (rp_mode === 'vocab') {
+    const hint = showHint
+      ? '<br><span style="color:#888; font-size:0.85em;">' + rp_object.gu + '</span>'
+      : '';
+    document.getElementById('rpOutput').innerHTML =
+      'Say in Gujarati:<br><br>' +
+      'Mode: <b>Vocabulary</b><br><br>' +
+      'Category: <b>' + rp_object.category + '</b><br><br>' +
+      'Word: <b>' + rp_object.en + '</b>' + hint;
+    return;
+  }
+  const obj = rp_mode === 'lwnc' ? rp_object : rp_verb;
+  let hint = '';
+  if (showHint) {
+    hint = '<br><span style="color:#888; font-size:0.85em;">' + obj.gu;
+    if (rp_mode === 'verbTense' || rp_mode === 'whatifs') hint += ' &mdash; ' + rp_verb.type;
+    hint += '</span>';
+  }
+  const modeLabel = rp_mode === 'verbTense' ? 'Verb/Tense'
+                  : rp_mode === 'lwnc'      ? rp_category
+                  : rp_mode === 'cans'      ? 'Can'
+                  : 'What If (Jo/To)';
+  const objLabel = (rp_mode === 'lwnc' && rp_objectType === 'noun') ? 'Noun' : 'Verb';
+  document.getElementById('rpOutput').innerHTML =
+    'Say in Gujarati:<br><br>' +
+    'Mode: <b>' + modeLabel + '</b><br><br>' +
+    'Pronoun: <b>' + rp_person + '</b><br><br>' +
+    'Tense: <b>' + rp_tense + '</b><br><br>' +
+    objLabel + ': <b>' + obj.en + '</b>' + hint;
+}
+
+function rpToggleHint() {
+  const btn = document.getElementById('rpHintBtn');
+  rp_showingHint = !rp_showingHint;
+  rpRenderOutput(rp_showingHint);
+  const hintLabel = rp_mode === 'vocab'                             ? 'Gujarati'
+                  : (rp_mode === 'lwnc' && rp_objectType === 'noun') ? 'Noun' : 'Verb';
+  btn.textContent = (rp_showingHint ? 'Hide ' : 'Show ') + hintLabel + ' Hint';
+}
+
+function rpShowPronouns() {
+  previousScreen = 'randomScreen';
+  if (rp_mode === 'verbTense') {
+    currentTense = rp_tense;
+    showPronounScreen();
+  } else if (rp_mode === 'lwnc') {
+    showScreen('lwncPronounScreen');
+  } else if (rp_mode === 'cans') {
+    if (rp_tense === 'Simple Past') showScreen('pronounPastScreen');
+    else showScreen('cansPronounScreen');
+  } else { // whatifs
+    currentTense = rp_tense;
+    showPronounScreen();
+  }
+}
+
+function rpShowFormula() {
+  previousScreen = 'randomScreen';
+  if (rp_mode === 'lwnc') showScreen('lwncFormulaScreen');
+  else if (rp_mode === 'cans') showScreen('cansFormulaScreen');
 }
 
 function generate() {
@@ -872,16 +1147,29 @@ let cansTense       = '';
 let cansPerson      = '';
 let cansVerb        = null;
 let cansShowingHint = false;
+let cansDeck        = [];
+let cansIndex       = 0;
 
 function startCans() {
+  cansDeck = [...verbs].sort(() => Math.random() - 0.5);
+  cansIndex = 0;
   showScreen('cansScreen');
   cansRender();
 }
 
 function cansRender() {
+  if (cansIndex >= cansDeck.length) {
+    document.getElementById('cansOutput').innerHTML = '<b>All ' + cansDeck.length + ' verbs done!</b><br><br>Press "Next →" to shuffle and restart.';
+    document.getElementById('cansProgress').textContent = cansDeck.length + ' / ' + cansDeck.length;
+    document.getElementById('cansShowPronounsBtn').style.display = 'none';
+    document.getElementById('cansShowFormulaBtn').style.display = 'none';
+    document.getElementById('cansHintBtn').style.display = 'none';
+    return;
+  }
+
   cansTense  = random(cansTenses);
   cansPerson = random(persons);
-  cansVerb   = random(verbs);
+  cansVerb   = cansDeck[cansIndex];
 
   const scheme = lwncTenseSchemes[cansTense] || lwncTenseSchemes['Simple Past'];
   const root = document.documentElement;
@@ -897,6 +1185,7 @@ function cansRender() {
   cansShowingHint = false;
   cansRenderOutput(false);
 
+  document.getElementById('cansProgress').textContent = (cansIndex + 1) + ' / ' + cansDeck.length;
   document.getElementById('cansShowPronounsBtn').style.display = '';
   document.getElementById('cansHintBtn').textContent = 'Show Verb Hint';
   document.getElementById('cansHintBtn').style.display = '';
@@ -943,6 +1232,292 @@ function buildCansFormula(tense) {
     'Continuous Past':`<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(to/ti/tũ/tā) &nbsp;+&nbsp; ha(to/ti/tũ/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ kari sakto hato. (I used to be able to do.)</i></p>`,
   };
   return formulas[tense] || '<p>(Coming soon)</p>';
+}
+
+function cansNext() {
+  if (cansIndex >= cansDeck.length) {
+    cansDeck = [...verbs].sort(() => Math.random() - 0.5);
+    cansIndex = 0;
+  } else {
+    cansIndex++;
+  }
+  cansRender();
+}
+
+// ── What If's ────────────────────────────────────────────────
+const whatIfsTenses = ['Simple Present', 'Simple Past', 'Simple Future', 'Continuous Past', 'Continuous Present', 'Continuous Future', 'Perfect Past', 'Perfect Present', 'Perfect Future'];
+let whatIfsTense       = '';
+let whatIfsPerson      = '';
+let whatIfsVerb        = null;
+let whatIfsShowingHint = false;
+let whatIfsDeck        = [];
+let whatIfsIndex       = 0;
+
+function startWhatIfs() {
+  whatIfsDeck = [...verbs].sort(() => Math.random() - 0.5);
+  whatIfsIndex = 0;
+  showScreen('whatIfsScreen');
+  whatIfsRender();
+}
+
+const whatIfsTenseSamples = {
+  'Simple Present':     'e.g. "What if I eat food?" or "What if I walk?"',
+  'Simple Past':        'e.g. "What if I ate food?" or "What if I walked?"',
+  'Simple Future':      'e.g. "What if I will eat food?" or "What if I will walk?"',
+  'Continuous Past':    'e.g. "What if I was eating food?" or "What if I was walking?"',
+  'Continuous Present': 'e.g. "What if I am eating food?" or "What if I am walking?"',
+  'Continuous Future':  'e.g. "What if I will be eating food?" or "What if I will be walking?"',
+  'Perfect Past':       'e.g. "What if I had to eat food?" or "What if I had to walk?"',
+  'Perfect Present':    'e.g. "What if I have to eat food?" or "What if I have to walk?"',
+  'Perfect Future':     'e.g. "What if I will have to eat food?" or "What if I will have to walk?"',
+};
+
+function whatIfsRender() {
+  if (whatIfsIndex >= whatIfsDeck.length) {
+    document.getElementById('whatIfsOutput').innerHTML = '<b>All ' + whatIfsDeck.length + ' verbs done!</b><br><br>Press "Next →" to shuffle and restart.';
+    document.getElementById('whatIfsProgress').textContent = whatIfsDeck.length + ' / ' + whatIfsDeck.length;
+    document.getElementById('whatIfsShowPronounsBtn').style.display = 'none';
+    document.getElementById('whatIfsShowConjugationsBtn').style.display = 'none';
+    document.getElementById('whatIfsHintBtn').style.display = 'none';
+    return;
+  }
+
+  whatIfsTense  = random(whatIfsTenses);
+  whatIfsPerson = random(persons);
+  whatIfsVerb   = whatIfsDeck[whatIfsIndex];
+
+  const tenseSchemes = {
+    'Simple Present':  { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Simple Past':     { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Simple Future':   { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Continuous Past':    { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Continuous Present': { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Continuous Future':  { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Perfect Past':    { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Perfect Present': { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Perfect Future':  { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+  };
+  const scheme = tenseSchemes[whatIfsTense] || tenseSchemes['Simple Past'];
+  const root = document.documentElement;
+  root.style.setProperty('--color-bg',             scheme.bg);
+  root.style.setProperty('--color-primary',         scheme.primary);
+  root.style.setProperty('--color-primary-hover',   scheme.hover);
+  root.style.setProperty('--color-border',          scheme.border);
+  root.style.setProperty('--color-border-light',    scheme.borderLight);
+  root.style.setProperty('--color-table-even',      scheme.tableEven);
+  root.style.setProperty('--color-secondary-hover', scheme.secondaryHover);
+  root.style.setProperty('--color-shadow',          scheme.shadow);
+
+  whatIfsShowingHint = false;
+  whatIfsRenderOutput(false);
+
+  document.getElementById('whatIfsProgress').textContent = (whatIfsIndex + 1) + ' / ' + whatIfsDeck.length;
+  const whatIfsTenseSampleEl = document.getElementById('whatIfsTenseSample');
+  whatIfsTenseSampleEl.textContent = whatIfsTenseSamples[whatIfsTense] || '';
+  whatIfsTenseSampleEl.style.display = '';
+
+  document.getElementById('whatIfsShowPronounsBtn').style.display = '';
+  const whatIfsConjBtn = document.getElementById('whatIfsShowConjugationsBtn');
+  whatIfsConjBtn.textContent = 'Example ' + whatIfsTense + ' Tense Conjugations';
+  whatIfsConjBtn.style.display = '';
+  document.getElementById('conjugationsTitle').textContent = 'What If ' + whatIfsTense + ' Tense Conjugations';
+  document.getElementById('conjugationsExampleVerb').style.display = 'none';
+  document.getElementById('conjugationsTableContainer').innerHTML = buildWhatIfsConjugationTable(whatIfsTense);
+  document.getElementById('whatIfsHintBtn').textContent = 'Show Verb Hint';
+  document.getElementById('whatIfsHintBtn').style.display = '';
+
+}
+
+function whatIfsRenderOutput(showHint) {
+  const hint = showHint
+    ? '<br><span style="color:#888; font-size:0.85em;">' + whatIfsVerb.gu + ' &mdash; ' + whatIfsVerb.type + '</span>'
+    : '';
+  document.getElementById('whatIfsOutput').innerHTML =
+    'Say in Gujarati:<br><br>' +
+    'Pronoun: <b>' + whatIfsPerson + '</b><br><br>' +
+    'Tense: <b>' + whatIfsTense + '</b><br><br>' +
+    'Verb: <b>' + whatIfsVerb.en + '</b>' + hint;
+}
+
+function whatIfsToggleHint() {
+  const btn = document.getElementById('whatIfsHintBtn');
+  whatIfsShowingHint = !whatIfsShowingHint;
+  whatIfsRenderOutput(whatIfsShowingHint);
+  btn.textContent = whatIfsShowingHint ? 'Hide Verb Hint' : 'Show Verb Hint';
+}
+
+function whatIfsShowPronouns() {
+  previousScreen = 'whatIfsScreen';
+  currentTense = whatIfsTense;
+  showPronounScreen();
+}
+
+function buildWhatIfsFormula(tense) {
+  const formulas = {
+    'Simple Present':     '<p>(Coming soon)</p>',
+    'Simple Past':        '<p>(Coming soon)</p>',
+    'Simple Future':      '<p>(Coming soon)</p>',
+    'Continuous Past':    '<p>(Coming soon)</p>',
+    'Continuous Present': '<p>(Coming soon)</p>',
+    'Continuous Future':  '<p>(Coming soon)</p>',
+    'Perfect Past':       '<p>(Coming soon)</p>',
+    'Perfect Present':    '<p>(Coming soon)</p>',
+    'Perfect Future':     '<p>(Coming soon)</p>',
+  };
+  return formulas[tense] || '<p>(Coming soon)</p>';
+}
+
+function whatIfsNext() {
+  if (whatIfsIndex >= whatIfsDeck.length) {
+    whatIfsDeck = [...verbs].sort(() => Math.random() - 0.5);
+    whatIfsIndex = 0;
+  } else {
+    whatIfsIndex++;
+  }
+  whatIfsRender();
+}
+
+// ── Can's & What If's (Combined) ──────────────────────────────
+let combinedDeck        = [];
+let combinedIndex       = 0;
+let combinedMode        = '';
+let combinedTense       = '';
+let combinedPerson      = '';
+let combinedVerb        = null;
+let combinedShowingHint = false;
+
+function startCombined() {
+  combinedDeck = [...verbs].sort(() => Math.random() - 0.5);
+  combinedIndex = 0;
+  showScreen('combinedScreen');
+  combinedRender();
+}
+
+function combinedRender() {
+  if (combinedIndex >= combinedDeck.length) {
+    document.getElementById('combinedOutput').innerHTML = '<b>All ' + combinedDeck.length + ' verbs done!</b><br><br>Press "Next →" to shuffle and restart.';
+    document.getElementById('combinedProgress').textContent = combinedDeck.length + ' / ' + combinedDeck.length;
+    document.getElementById('combinedSubtitle').style.display = 'none';
+    document.getElementById('combinedShowPronounsBtn').style.display = 'none';
+    document.getElementById('combinedShowConjugationsBtn').style.display = 'none';
+    document.getElementById('combinedShowFormulaBtn').style.display = 'none';
+    document.getElementById('combinedHintBtn').style.display = 'none';
+    return;
+  }
+
+  combinedMode   = Math.random() < 0.5 ? 'cans' : 'whatifs';
+  combinedVerb   = combinedDeck[combinedIndex];
+  combinedPerson = random(persons);
+  combinedTense  = combinedMode === 'cans' ? random(cansTenses) : random(whatIfsTenses);
+
+  const tenseSchemes = {
+    'Simple Present':     { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Simple Past':        { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Simple Future':      { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Continuous Past':    { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Continuous Present': { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Continuous Future':  { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Perfect Past':       { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
+    'Perfect Present':    { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
+    'Perfect Future':     { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+  };
+  const scheme = tenseSchemes[combinedTense] || tenseSchemes['Simple Past'];
+  const root = document.documentElement;
+  root.style.setProperty('--color-bg',             scheme.bg);
+  root.style.setProperty('--color-primary',         scheme.primary);
+  root.style.setProperty('--color-primary-hover',   scheme.hover);
+  root.style.setProperty('--color-border',          scheme.border);
+  root.style.setProperty('--color-border-light',    scheme.borderLight);
+  root.style.setProperty('--color-table-even',      scheme.tableEven);
+  root.style.setProperty('--color-secondary-hover', scheme.secondaryHover);
+  root.style.setProperty('--color-shadow',          scheme.shadow);
+
+  combinedShowingHint = false;
+  combinedRenderOutput(false);
+
+  document.getElementById('combinedProgress').textContent = (combinedIndex + 1) + ' / ' + combinedDeck.length;
+
+  // Subtitle: tense sample hint for What If's only
+  const subtitleEl = document.getElementById('combinedSubtitle');
+  if (combinedMode === 'whatifs') {
+    subtitleEl.textContent = whatIfsTenseSamples[combinedTense] || '';
+    subtitleEl.style.display = '';
+  } else {
+    subtitleEl.style.display = 'none';
+  }
+
+  document.getElementById('combinedShowPronounsBtn').style.display = '';
+
+  // Conjugations: What If's mode only
+  const conjBtn = document.getElementById('combinedShowConjugationsBtn');
+  if (combinedMode === 'whatifs') {
+    conjBtn.textContent = 'Example ' + combinedTense + ' Tense Conjugations';
+    document.getElementById('conjugationsTitle').textContent = 'What If ' + combinedTense + ' Tense Conjugations';
+    document.getElementById('conjugationsExampleVerb').style.display = 'none';
+    document.getElementById('conjugationsTableContainer').innerHTML = buildWhatIfsConjugationTable(combinedTense);
+    conjBtn.style.display = '';
+  } else {
+    conjBtn.style.display = 'none';
+  }
+
+  // Formula: Can's mode only
+  const formulaBtn = document.getElementById('combinedShowFormulaBtn');
+  if (combinedMode === 'cans') {
+    formulaBtn.textContent = 'Show ' + combinedTense + ' Formula';
+    document.getElementById('cansFormulaTitle').textContent = combinedTense + ' Can Formula';
+    document.getElementById('cansFormulaContainer').innerHTML = buildCansFormula(combinedTense);
+    formulaBtn.style.display = '';
+  } else {
+    formulaBtn.style.display = 'none';
+  }
+
+  document.getElementById('combinedHintBtn').textContent = 'Show Verb Hint';
+  document.getElementById('combinedHintBtn').style.display = '';
+}
+
+function combinedRenderOutput(showHint) {
+  const hint = showHint
+    ? '<br><span style="color:#888; font-size:0.85em;">' + combinedVerb.gu +
+      (combinedMode === 'whatifs' ? ' &mdash; ' + combinedVerb.type : '') + '</span>'
+    : '';
+  const modeLabel = combinedMode === 'cans' ? 'Can' : 'What If (Jo/To)';
+  document.getElementById('combinedOutput').innerHTML =
+    'Say in Gujarati:<br><br>' +
+    'Mode: <b>' + modeLabel + '</b><br><br>' +
+    'Pronoun: <b>' + combinedPerson + '</b><br><br>' +
+    'Tense: <b>' + combinedTense + '</b><br><br>' +
+    'Verb: <b>' + combinedVerb.en + '</b>' + hint;
+}
+
+function combinedNext() {
+  if (combinedIndex >= combinedDeck.length) {
+    combinedDeck = [...verbs].sort(() => Math.random() - 0.5);
+    combinedIndex = 0;
+  } else {
+    combinedIndex++;
+  }
+  combinedRender();
+}
+
+function combinedToggleHint() {
+  const btn = document.getElementById('combinedHintBtn');
+  combinedShowingHint = !combinedShowingHint;
+  combinedRenderOutput(combinedShowingHint);
+  btn.textContent = combinedShowingHint ? 'Hide Verb Hint' : 'Show Verb Hint';
+}
+
+function combinedShowPronouns() {
+  previousScreen = 'combinedScreen';
+  if (combinedMode === 'cans') {
+    if (combinedTense === 'Simple Past') {
+      showScreen('pronounPastScreen');
+    } else {
+      showScreen('cansPronounScreen');
+    }
+  } else {
+    currentTense = combinedTense;
+    showPronounScreen();
+  }
 }
 
 // ── Verb Cycle ────────────────────────────────────────────────
@@ -1291,9 +1866,10 @@ function buildLwncFormula(tense, type, category) {
 <div id="cansScreen" class="screen">
   <h1>Can's</h1>
   <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
+  <p class="fc-progress" id="cansProgress" style="color:var(--color-primary); font-size:16px; margin:6px 0 0;"></p>
   <div class="card" id="cansOutput"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-    <button onclick="cansRender()">Next →</button>
+    <button onclick="cansNext()">Next →</button>
     <button id="cansShowPronounsBtn" class="secondary-btn" onclick="cansShowPronouns()" style="display:none;">Show Pronouns Table</button>
     <button id="cansShowFormulaBtn" class="secondary-btn" onclick="previousScreen='cansScreen'; showScreen('cansFormulaScreen')" style="display:none;">Show Formula</button>
     <button id="cansHintBtn" class="secondary-btn" onclick="cansToggleHint()" style="display:none;">Show Verb Hint</button>
@@ -1325,6 +1901,60 @@ function buildLwncFormula(tense, type, category) {
     </tbody>
   </table>
   <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
+</div>
+
+<!-- What If's Screen -->
+<div id="whatIfsScreen" class="screen">
+  <h1>What If's</h1>
+  <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
+  <p style="font-size:14px; color:#888; margin:4px auto 0; max-width:400px; text-align:center; font-style:italic;">Formula: Jo [clause], to?</p>
+  <p class="fc-progress" id="whatIfsProgress" style="color:var(--color-primary); font-size:16px; margin:6px 0 0;"></p>
+  <p id="whatIfsTenseSample" style="display:none; font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:center; font-style:italic;"></p>
+  <div class="card" id="whatIfsOutput"></div>
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+    <button onclick="whatIfsNext()">Next →</button>
+    <button id="whatIfsShowPronounsBtn" class="secondary-btn" onclick="whatIfsShowPronouns()" style="display:none;">Show Pronouns Table</button>
+    <button id="whatIfsShowConjugationsBtn" class="secondary-btn" onclick="previousScreen='whatIfsScreen'; showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
+    <button id="whatIfsHintBtn" class="secondary-btn" onclick="whatIfsToggleHint()" style="display:none;">Show Verb Hint</button>
+  </div>
+</div>
+
+<!-- What If's Formula Screen -->
+<div id="whatIfsFormulaScreen" class="screen">
+  <h1 id="whatIfsFormulaTitle">Formula</h1>
+  <div id="whatIfsFormulaContainer"></div>
+  <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
+</div>
+
+<!-- Can's & What If's (Combined) Screen -->
+<div id="combinedScreen" class="screen">
+  <h1>Can's &amp; What If's</h1>
+  <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
+  <p id="combinedSubtitle" style="display:none; font-size:14px; color:#888; margin:4px auto 0; max-width:400px; text-align:center; font-style:italic;"></p>
+  <p class="fc-progress" id="combinedProgress" style="color:var(--color-primary); font-size:16px; margin:6px 0 0;"></p>
+  <div class="card" id="combinedOutput"></div>
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+    <button onclick="combinedNext()">Next →</button>
+    <button id="combinedShowPronounsBtn" class="secondary-btn" onclick="combinedShowPronouns()" style="display:none;">Show Pronouns Table</button>
+    <button id="combinedShowConjugationsBtn" class="secondary-btn" onclick="previousScreen='combinedScreen'; showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
+    <button id="combinedShowFormulaBtn" class="secondary-btn" onclick="previousScreen='combinedScreen'; showScreen('cansFormulaScreen')" style="display:none;">Show Formula</button>
+    <button id="combinedHintBtn" class="secondary-btn" onclick="combinedToggleHint()" style="display:none;">Show Verb Hint</button>
+  </div>
+</div>
+
+<!-- Random Practice Screen -->
+<div id="randomScreen" class="screen">
+  <h1>Random Practice</h1>
+  <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
+  <p id="rpSubtitle" style="display:none; font-size:14px; color:#888; margin:4px auto 0; max-width:400px; text-align:center; font-style:italic;"></p>
+  <div class="card" id="rpOutput"></div>
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+    <button onclick="rpRender()">Next →</button>
+    <button id="rpShowPronounsBtn" class="secondary-btn" onclick="rpShowPronouns()" style="display:none;">Show Pronouns Table</button>
+    <button id="rpShowConjugationsBtn" class="secondary-btn" onclick="previousScreen='randomScreen'; showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
+    <button id="rpShowFormulaBtn" class="secondary-btn" onclick="rpShowFormula()" style="display:none;">Show Formula</button>
+    <button id="rpHintBtn" class="secondary-btn" onclick="rpToggleHint()" style="display:none;">Show Verb Hint</button>
+  </div>
 </div>
 
 <!-- Flash Cards Screen -->
