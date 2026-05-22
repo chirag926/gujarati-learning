@@ -307,6 +307,7 @@
     <button onclick="showScreen('mainScreen')">Random Practice</button>
     <button onclick="startVerbCycle()">Verb/Tense Practice</button>
     <button onclick="startLWNC()">Likes/Wants/Needs</button>
+    <button onclick="startCans()">Can's</button>
     <button onclick="showScreen('flashcardsScreen'); initFlashcards();">Flash Cards</button>
     <button onclick="showScreen('vocabScreen'); initVocab();">Vocabulary List</button>
   </div>
@@ -865,6 +866,85 @@ function generate() {
   document.getElementById("conjugationsTableContainer").innerHTML = buildConjugationTable(tense);
 }
 
+// ── Can's ─────────────────────────────────────────────────────
+const cansTenses = ['Simple Present', 'Simple Future', 'Simple Past', 'Continuous Past'];
+let cansTense       = '';
+let cansPerson      = '';
+let cansVerb        = null;
+let cansShowingHint = false;
+
+function startCans() {
+  showScreen('cansScreen');
+  cansRender();
+}
+
+function cansRender() {
+  cansTense  = random(cansTenses);
+  cansPerson = random(persons);
+  cansVerb   = random(verbs);
+
+  const scheme = lwncTenseSchemes[cansTense] || lwncTenseSchemes['Simple Past'];
+  const root = document.documentElement;
+  root.style.setProperty('--color-bg',             scheme.bg);
+  root.style.setProperty('--color-primary',         scheme.primary);
+  root.style.setProperty('--color-primary-hover',   scheme.hover);
+  root.style.setProperty('--color-border',          scheme.border);
+  root.style.setProperty('--color-border-light',    scheme.borderLight);
+  root.style.setProperty('--color-table-even',      scheme.tableEven);
+  root.style.setProperty('--color-secondary-hover', scheme.secondaryHover);
+  root.style.setProperty('--color-shadow',          scheme.shadow);
+
+  cansShowingHint = false;
+  cansRenderOutput(false);
+
+  document.getElementById('cansShowPronounsBtn').style.display = '';
+  document.getElementById('cansHintBtn').textContent = 'Show Verb Hint';
+  document.getElementById('cansHintBtn').style.display = '';
+
+  const formulaBtn = document.getElementById('cansShowFormulaBtn');
+  formulaBtn.textContent = 'Show ' + cansTense + ' Formula';
+  formulaBtn.style.display = '';
+  document.getElementById('cansFormulaTitle').textContent = cansTense + ' Can Formula';
+  document.getElementById('cansFormulaContainer').innerHTML = buildCansFormula(cansTense);
+}
+
+function cansRenderOutput(showHint) {
+  const hint = showHint
+    ? '<br><span style="color:#888; font-size:0.85em;">' + cansVerb.gu + '</span>'
+    : '';
+  document.getElementById('cansOutput').innerHTML =
+    'Say in Gujarati:<br><br>' +
+    'Pronoun: <b>' + cansPerson + '</b><br><br>' +
+    'Tense: <b>' + cansTense + '</b><br><br>' +
+    'Verb: <b>' + cansVerb.en + '</b>' + hint;
+}
+
+function cansToggleHint() {
+  const btn = document.getElementById('cansHintBtn');
+  cansShowingHint = !cansShowingHint;
+  cansRenderOutput(cansShowingHint);
+  btn.textContent = cansShowingHint ? 'Hide Verb Hint' : 'Show Verb Hint';
+}
+
+function cansShowPronouns() {
+  previousScreen = 'cansScreen';
+  if (cansTense === 'Simple Past') {
+    showScreen('pronounPastScreen');
+  } else {
+    showScreen('cansPronounScreen');
+  }
+}
+
+function buildCansFormula(tense) {
+    const formulas = {
+    'Simple Present': `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(ũ/e/o/ie) &nbsp;+&nbsp; che/cho/che/chie</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ khāi sakũ chũ. (I can eat.)</i></p>`,
+    'Simple Future':  `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(is/so/se/isu)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ kari sakis. (I will be able to do.)</i></p>`,
+    'Simple Past':    `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(yo/i/yũ/yā) &nbsp;+&nbsp; ha(to/ti/tũ/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ kari sakyũ hot. (I was able to do.)</i></p>`,
+    'Continuous Past':`<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(to/ti/tũ/tā) &nbsp;+&nbsp; ha(to/ti/tũ/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ kari sakto hato. (I used to be able to do.)</i></p>`,
+  };
+  return formulas[tense] || '<p>(Coming soon)</p>';
+}
+
 // ── Verb Cycle ────────────────────────────────────────────────
 let vcDeck = [];
 let vcIndex = 0;
@@ -1207,6 +1287,46 @@ function buildLwncFormula(tense, type, category) {
   <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
 </div>
 
+<!-- Can's Screen -->
+<div id="cansScreen" class="screen">
+  <h1>Can's</h1>
+  <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
+  <div class="card" id="cansOutput"></div>
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+    <button onclick="cansRender()">Next →</button>
+    <button id="cansShowPronounsBtn" class="secondary-btn" onclick="cansShowPronouns()" style="display:none;">Show Pronouns Table</button>
+    <button id="cansShowFormulaBtn" class="secondary-btn" onclick="previousScreen='cansScreen'; showScreen('cansFormulaScreen')" style="display:none;">Show Formula</button>
+    <button id="cansHintBtn" class="secondary-btn" onclick="cansToggleHint()" style="display:none;">Show Verb Hint</button>
+  </div>
+</div>
+
+<!-- Can's Formula Screen -->
+<div id="cansFormulaScreen" class="screen">
+  <h1 id="cansFormulaTitle">Formula</h1>
+  <div id="cansFormulaContainer"></div>
+  <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
+</div>
+
+<!-- Can's Pronoun Screen -->
+<div id="cansPronounScreen" class="screen">
+  <h1>Pronouns (Can's)</h1>
+  <p style="font-size:16px; color:#555; margin: 16px auto 6px; max-width:400px; text-align:left;">For &ldquo;Can&rdquo; sentences, the verb always agrees with the doer of the action.</p>
+  <table class="pronoun-table">
+    <thead><tr><th>English</th><th>Romanized Gujarati</th></tr></thead>
+    <tbody>
+      <tr><td>I</td><td>Hũ</td></tr>
+      <tr><td>You (informal)</td><td>Tũ</td></tr>
+      <tr><td>You (formal)</td><td>Tame</td></tr>
+      <tr><td>You all</td><td>Tame / Tame badhā</td></tr>
+      <tr><td>He / She</td><td>E</td></tr>
+      <tr><td>We (exclusive)</td><td>Ame</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
+      <tr><td>They</td><td>E badhā</td></tr>
+    </tbody>
+  </table>
+  <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
+</div>
+
 <!-- Flash Cards Screen -->
 <div id="flashcardsScreen" class="screen">
   <h1 style="color:#e0e0e0;">Flash Cards</h1>
@@ -1313,32 +1433,32 @@ const flashcards = [
   { en: "afternoon",                      gu: "bapor",                  category: "Time" },
   { en: "evening",                        gu: "sāṃj",                   category: "Time" },
   { en: "night",                          gu: "rāt (f)",                    category: "Time" },
-  { en: "day",                            gu: "din/divas",              category: "Time" },
-  { en: "week",                           gu: "aṭhvāḍiyũ",              category: "Time" },
-  { en: "month",                          gu: "mahino",                 category: "Time" },
-  { en: "year",                           gu: "varash",                 category: "Time" },
-  { en: "holiday / day off",              gu: "rajā",                   category: "Time" },
-  { en: "Sunday",                         gu: "Ravivār",                category: "Time" },
-  { en: "Monday",                         gu: "Somvār",                 category: "Time" },
-  { en: "Tuesday",                        gu: "Maṅgaḷvār",              category: "Time" },
-  { en: "Wednesday",                      gu: "Budhvār",                category: "Time" },
-  { en: "Thursday",                       gu: "Guruvār",                category: "Time" },
-  { en: "Friday",                         gu: "Shukravār",               category: "Time" },
-  { en: "Saturday",                       gu: "Shanivār",                category: "Time" },
+  { en: "day",                            gu: "din/divas (m)",              category: "Time" },
+  { en: "week",                           gu: "aṭhvāḍiyũ (n)",              category: "Time" },
+  { en: "month",                          gu: "mahino (m)",                 category: "Time" },
+  { en: "year",                           gu: "varash (n)",                 category: "Time" },
+  { en: "holiday / day off",              gu: "rajā (f)",                   category: "Time" },
+  { en: "Sunday",                         gu: "Ravivār (m)",                category: "Time" },
+  { en: "Monday",                         gu: "Somvār (m)",                 category: "Time" },
+  { en: "Tuesday",                        gu: "Maṅgaḷvār (m)",              category: "Time" },
+  { en: "Wednesday",                      gu: "Budhvār (m)",                category: "Time" },
+  { en: "Thursday",                       gu: "Guruvār (m)",                category: "Time" },
+  { en: "Friday",                         gu: "Shukravār (m)",               category: "Time" },
+  { en: "Saturday",                       gu: "Shanivār (m)",                category: "Time" },
   // Family
-  { en: "mother",                         gu: "mami / mā",               category: "Family" },
-  { en: "father",                         gu: "papa / bāp",              category: "Family" },
-  { en: "brother",                        gu: "bhāi",                    category: "Family" },
-  { en: "sister",                         gu: "bhen",                    category: "Family" },
-  { en: "son",                            gu: "dikro",                   category: "Family" },
-  { en: "daughter",                       gu: "dikri",                   category: "Family" },
-  { en: "grandfather (dad's side)",       gu: "dādā",                    category: "Family" },
-  { en: "grandmother (dad's side)",       gu: "dādi",                    category: "Family" },
-  { en: "grandfather (mom's side)",       gu: "nānā",                    category: "Family" },
-  { en: "grandmother (mom's side)",       gu: "nāni",                    category: "Family" },
+  { en: "mother",                         gu: "mami / mā / māta (p)",    category: "Family" },
+  { en: "father",                         gu: "papa / bāp / pita (p)",   category: "Family" },
+  { en: "brother",                        gu: "bhāi (m)",                category: "Family" },
+  { en: "sister",                         gu: "bhen (f)",                category: "Family" },
+  { en: "son",                            gu: "dikro (m)",               category: "Family" },
+  { en: "daughter",                       gu: "dikri (f)",               category: "Family" },
+  { en: "grandfather (dad's side)",       gu: "dādā (p)",                category: "Family" },
+  { en: "grandmother (dad's side)",       gu: "dādi (p)",                category: "Family" },
+  { en: "grandfather (mom's side)",       gu: "nānā (p)",                category: "Family" },
+  { en: "grandmother (mom's side)",       gu: "nāni (p)",                category: "Family" },
   { en: "husband",                        gu: "pati",                    category: "Family" },
   { en: "wife",                           gu: "patni",                   category: "Family" },
-  { en: "friend",                         gu: "mitra / dost (depends)",            category: "Family" },
+  { en: "friend",                         gu: "mitra / dost (depends)",  category: "Family" },
   // Adjectives
   { en: "a lot",                          gu: "ghaṇũ",                   category: "Adjective" },
   { en: "busy",                           gu: "vyast",                   category: "Adjective" },
@@ -1395,9 +1515,9 @@ const flashcards = [
   { en: "window",                         gu: "bari (m)",                 category: "Noun" },
   { en: "kitchen",                        gu: "rasodũ (n)",               category: "Noun" },
   { en: "house / home",                   gu: "ghar (n)",                 category: "Noun" },
-  { en: "market",                         gu: "bajār",                    category: "Noun" },
-  { en: "temple",                         gu: "mandir",                   category: "Noun" },
-  { en: "road / street",                  gu: "roḍ / rasto",              category: "Noun" },
+  { en: "market",                         gu: "bajār (n)",                    category: "Noun" },
+  { en: "temple",                         gu: "mandir (n)",                   category: "Noun" },
+  { en: "road / street",                  gu: "roḍ / rasto (m)",              category: "Noun" },
   { en: "water",                          gu: "pāṇi (n)",                 category: "Noun" },
   { en: "milk",                           gu: "dudh (n)",                 category: "Noun" },
   { en: "rice",                           gu: "bhaat (n)",                category: "Noun" },
@@ -1407,56 +1527,54 @@ const flashcards = [
   { en: "lake",                           gu: "taḷāv (n)",                category: "Noun" },
   { en: "tree",                           gu: "jhaaḍ (n)",                category: "Noun" },
 
-  { en: "food",                           gu: "khāvāṇũ",                  category: "Noun" },
-  { en: "money",                          gu: "paisā",                    category: "Noun" },
-  { en: "time",                           gu: "samay / vakhat",           category: "Noun" },
-  { en: "work",                           gu: "kām (n)",                  category: "Noun" },
-  { en: "school",                         gu: "shāḷā (f)",                category: "Noun" },
-  { en: "village",                        gu: "gām (n)",                  category: "Noun" },
-  { en: "store",                          gu: "dukān (f)",                category: "Noun" },
-  { en: "teacher",                           gu: "shikshak (depends)",    category: "Noun" },
-  { en: "student",                           gu: "vidhyārthi (depends)",  category: "Noun" },
-  { en: "book",                           gu: "pustak (m) / chopḍi (f)",  category: "Noun" },
-  { en: "phone",                          gu: "fon (m)",                  category: "Noun" },
-  { en: "car",                            gu: "gāḍi (f)",                 category: "Noun" },
-  { en: "name",                           gu: "nām",                      category: "Noun" },
-  { en: "age",                            gu: "umar",                     category: "Noun" },
-  { en: "family (concept)",               gu: "parivār (m) / kuṭumb",     category: "Noun" },
-  { en: "place / space",                  gu: "jagya",                    category: "Noun" },
-  { en: "culture",                        gu: "sanskruti",                category: "Noun" },
-  { en: "people / ethnicity",             gu: "loko / jāti",              category: "Noun" },
-  { en: "language",                       gu: "bhāshā (f)",               category: "Noun" },
-  { en: "story",                          gu: "vārtā (f)",                category: "Noun" },
-
-  { en: "country",                        gu: "desh (m)",                 category: "Noun" },
-
+  { en: "food",                           gu: "khāvāṇũ (n)",                category: "Noun" },
+  { en: "money",                          gu: "paisā (p)",                  category: "Noun" },
+  { en: "time",                           gu: "samay / vakhat",             category: "Noun" },
+  { en: "work",                           gu: "kām (n)",                    category: "Noun" },
+  { en: "school",                         gu: "shāḷā (f)",                  category: "Noun" },
+  { en: "village",                        gu: "gām (n)",                    category: "Noun" },
+  { en: "store",                          gu: "dukān (f)",                  category: "Noun" },
+  { en: "teacher",                        gu: "shikshak (depends)",         category: "Noun" },
+  { en: "student",                        gu: "vidhyārthi (depends)",       category: "Noun" },
+  { en: "book",                           gu: "pustak (m) / chopḍi (f)",    category: "Noun" },
+  { en: "phone",                          gu: "fon (m)",                    category: "Noun" },
+  { en: "car",                            gu: "gāḍi (f)",                   category: "Noun" },
+  { en: "name",                           gu: "nām (n)",                    category: "Noun" },
+  { en: "age",                            gu: "umar (f)",                   category: "Noun" },
+  { en: "family (concept)",               gu: "parivār (m) / kuṭumb",       category: "Noun" },
+  { en: "place / space",                  gu: "jagya (f)",                  category: "Noun" },
+  { en: "culture",                        gu: "sanskruti (f)",              category: "Noun" },
+  { en: "people / ethnicity",             gu: "loko (p) / jāti (f)",        category: "Noun" },
+  { en: "language",                       gu: "bhāshā (f)",                 category: "Noun" },
+  { en: "story",                          gu: "vārtā (f)",                  category: "Noun" },
+  { en: "country",                        gu: "desh (m)",                   category: "Noun" },
   { en: "office work",                    gu: "office nu kām",              category: "Noun" },
   { en: "popular things / places",        gu: "prakkyāt vastu'o (f, plural)", category: "Noun" },
-  { en: "popular places",        gu: "prakkyāt jagyā'o (f, plural)", category: "Noun" },
-  { en: "climate",                        gu: "vātāvaraṇ",                  category: "Noun" },
+  { en: "popular places",                 gu: "prakkyāt jagyā'o (f, plural)", category: "Noun" },
+  { en: "climate",                        gu: "vātāvaraṇ (n)",              category: "Noun" },
   { en: "sunlight",                       gu: "taḍko",                      category: "Noun" },
   { en: "the one who has / associated with / seller of", gu: "vāḷo",        category: "Noun" },
-  { en: "sugar",                          gu: "khāṇḍ",                      category: "Noun" },
-  { en: "anger",                          gu: "gusso",                      category: "Noun" },
-  { en: "hunger",                         gu: "bhūkh",                      category: "Noun" },
-  { en: "thirst",                         gu: "taras",                      category: "Noun" },
-  { en: "snow",                           gu: "baraf",                      category: "Noun" },
-  { en: "sand",                           gu: "reti",                       category: "Noun" },
-  { en: "celebration",                    gu: "ujavṇi",                     category: "Noun" },
+  { en: "sugar",                          gu: "khāṇḍ (f)",                  category: "Noun" },
+  { en: "anger",                          gu: "gusso (m)",                  category: "Noun" },
+  { en: "hunger",                         gu: "bhūkh (f)",                  category: "Noun" },
+  { en: "thirst",                         gu: "taras (f)",                  category: "Noun" },
+  { en: "snow",                           gu: "baraf (m)",                  category: "Noun" },
+  { en: "sand",                           gu: "reti (f)",                   category: "Noun" },
+  { en: "celebration",                    gu: "ujavṇi (f)",                 category: "Noun" },
   // Body Parts
   { en: "head",                           gu: "māthũ (n)",                  category: "Body Part" },
   { en: "eye",                            gu: "āṃkh (f)",                   category: "Body Part" },
-  { en: "nose",                           gu: "nāk",                        category: "Body Part" },
-  { en: "ear",                            gu: "kān",                        category: "Body Part" },
+  { en: "nose",                           gu: "nāk (n)",                    category: "Body Part" },
+  { en: "ear",                            gu: "kān (m)",                    category: "Body Part" },
   { en: "mouth",                          gu: "muṃh",                       category: "Body Part" },
   { en: "hand",                           gu: "hāth (m)",                   category: "Body Part" },
-  { en: "finger",                         gu: "āṃgḷi",                      category: "Body Part" },
-  { en: "leg",                            gu: "pag",                        category: "Body Part" },
-  { en: "foot",                           gu: "pag",                        category: "Body Part" },
-  { en: "nails",                          gu: "nakh",                       category: "Body Part" },
+  { en: "finger",                         gu: "āṃgḷi (f)",                  category: "Body Part" },
+  { en: "leg",                            gu: "pag (m)",                    category: "Body Part" },
+  { en: "foot",                           gu: "pag (m)",                    category: "Body Part" },
+  { en: "nails",                          gu: "nakh (p)",                   category: "Body Part" },
   { en: "hair",                           gu: "vāḷ (m, usually plural)",    category: "Body Part" },
-  { en: "teeth",                          gu: "dāṃt",                       category: "Body Part" },
-  { en: "stomach",                        gu: "pēṭ",                        category: "Body Part" },
+  { en: "teeth",                          gu: "dāṃt (p)",                   category: "Body Part" },
+  { en: "stomach",                        gu: "pēṭ (n)",                    category: "Body Part" },
   // Adverb
   { en: "just / only",                    gu: "khāli",                      category: "Adverb" },
   // Possessive
