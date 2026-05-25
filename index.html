@@ -306,7 +306,7 @@
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
     <button onclick="startRandomPractice()">Random Practice</button>
     <button onclick="startVerbCycle()">Verb/Tense Practice</button>
-    <button onclick="startLWNC()">Likes/Wants/Needs</button>
+    <button onclick="startLWNC()">Desires / Compulsion</button>
     <button onclick="startCombined()">Can's &amp; What If's</button>
     <button onclick="showScreen('flashcardsScreen'); initFlashcards();">Flash Cards</button>
     <button onclick="showScreen('vocabScreen'); initVocab();">Vocabulary List</button>
@@ -437,14 +437,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td>I</td><td>Marẽ</td></tr>
-      <tr><td>You (informal)</td><td>Tare</td></tr>
-      <tr><td>You (formal)</td><td>Tamare</td></tr>
-      <tr><td>You all</td><td>Tamare badhā'ne</td></tr>
+      <tr><td>I</td><td>Mārẽ</td></tr>
+      <tr><td>You (informal)</td><td>Tāre</td></tr>
+      <tr><td>You (formal)</td><td>Tamāre</td></tr>
+      <tr><td>You all</td><td>Tamāre badhā'ne</td></tr>
       <tr><td>He/She (informal)</td><td>ene</td></tr>
       <tr><td>He/She (formal)</td><td>emne</td></tr>
       <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
-      <tr><td>We (exclusive)</td><td>Amare</td></tr>
+      <tr><td>We (exclusive)</td><td>Amāre</td></tr>
       <tr><td>They</td><td>E badhā'ne</td></tr>
     </tbody>
   </table>
@@ -545,7 +545,8 @@ const persons = [
   "They"
 ];
 
-const tenses = ["Simple Past", "Simple Present", "Simple Future", "Continuous Past", "Continuous Present", "Continuous Future", "Perfect Past", "Perfect Present", "Perfect Future", "Imperfect Past", "Imperfect Present", "Imperfect Future"];
+// const tenses = ["Simple Past", "Simple Present", "Simple Future", "Continuous Past", "Continuous Present", "Continuous Future", "Perfect Past", "Perfect Present", "Perfect Future", "Imperfect Past", "Imperfect Present", "Imperfect Future"]; // Full list — Imperfect Past & Imperfect Future deactivated below
+const tenses = ["Simple Past", "Simple Present", "Simple Future", "Continuous Past", "Continuous Present", "Continuous Future", "Perfect Past", "Perfect Present", "Perfect Future", "Imperfect Present"];
 
 const tenseSamples = {
   'Simple Past':        'e.g. "I ate food." or "I walked."',
@@ -929,12 +930,13 @@ function rpRender() {
     rp_tense = random(tenses);
     rp_verb  = random(verbs);
   } else if (rp_mode === 'lwnc') {
-    rp_category  = random(['Likes', 'Wants', 'Needs']);
-    const tensesForCat = rp_category === 'Likes' ? lwncLikesTenses
-                       : rp_category === 'Wants' ? lwncWantsTenses
+    rp_category  = random(['Likes', 'Wants', 'Needs', 'Compulsion']);
+    const tensesForCat = rp_category === 'Likes'      ? lwncLikesTenses
+                       : rp_category === 'Wants'      ? lwncWantsTenses
+                       : rp_category === 'Compulsion' ? lwncCompulsionTenses
                        : lwncNeedsTenses;
     rp_tense      = random(tensesForCat);
-    rp_objectType = Math.random() < 0.5 ? 'verb' : 'noun';
+    rp_objectType = (rp_category === 'Compulsion' || Math.random() < 0.5) ? 'verb' : 'noun';
     if (rp_objectType === 'verb') {
       rp_object = random(verbs);
     } else {
@@ -1075,7 +1077,8 @@ function rpShowPronouns() {
     currentTense = rp_tense;
     showPronounScreen();
   } else if (rp_mode === 'lwnc') {
-    showScreen('lwncPronounScreen');
+    if (rp_category === 'Compulsion') showScreen('compulsionPronounScreen');
+    else showScreen('lwncPronounScreen');
   } else if (rp_mode === 'cans') {
     if (rp_tense === 'Simple Past') showScreen('pronounPastScreen');
     else showScreen('cansPronounScreen');
@@ -1634,14 +1637,15 @@ function vcNext() {
   vcRender();
 }
 
-// ── Likes/Wants/Needs/Can's ───────────────────────────────────
-const lwncLikesTenses = ['Simple Present', 'Simple Past', 'Simple Future', 'Continuous Past'];
-const lwncWantsTenses = ['Simple Present', 'Simple Past', 'Simple Future'];
-const lwncNeedsTenses = ['Simple Present', 'Simple Past', 'Simple Future'];
+// ── Likes/Wants/Needs/Compulsion/Can's ──────────────────────────
+const lwncLikesTenses      = ['Simple Present', 'Simple Past', 'Simple Future', 'Continuous Past'];
+const lwncWantsTenses      = ['Simple Present', 'Simple Past', 'Simple Future'];
+const lwncNeedsTenses      = ['Simple Present', 'Simple Past', 'Simple Future'];
+const lwncCompulsionTenses = ['Simple Present', 'Simple Past', 'Simple Future', 'Continuous Past'];
 
 let lwncTense      = '';
 let lwncPerson     = '';
-let lwncCategory   = '';  // 'Likes' or 'Needs'
+let lwncCategory   = '';  // 'Likes' / 'Wants' / 'Needs' / 'Compulsion'
 let lwncObjectType  = '';  // 'verb' or 'noun'
 let lwncObject      = null;
 let lwncShowingHint = false;
@@ -1659,13 +1663,16 @@ function startLWNC() {
 }
 
 function lwncRender() {
-  lwncCategory = random(['Likes', 'Wants', 'Needs']);
-  const tensesForCategory = lwncCategory === 'Likes' ? lwncLikesTenses : lwncCategory === 'Wants' ? lwncWantsTenses : lwncNeedsTenses;
+  lwncCategory = random(['Likes', 'Wants', 'Needs', 'Compulsion']);
+  const tensesForCategory = lwncCategory === 'Likes'      ? lwncLikesTenses
+                          : lwncCategory === 'Wants'      ? lwncWantsTenses
+                          : lwncCategory === 'Compulsion' ? lwncCompulsionTenses
+                          : lwncNeedsTenses;
   lwncTense  = random(tensesForCategory);
   lwncPerson = random(persons);
 
-  // Randomly pick a verb or a noun
-  lwncObjectType = Math.random() < 0.5 ? 'verb' : 'noun';
+  // Compulsion only uses verbs; others randomly pick verb or noun
+  lwncObjectType = (lwncCategory === 'Compulsion' || Math.random() < 0.5) ? 'verb' : 'noun';
   if (lwncObjectType === 'verb') {
     lwncObject = random(verbs);
   } else {
@@ -1725,7 +1732,47 @@ function lwncToggleHint() {
   btn.textContent = lwncShowingHint ? 'Hide ' + labelWord + ' Hint' : 'Show ' + labelWord + ' Hint';
 }
 
+function lwncShowPronouns() {
+  previousScreen = 'lwncScreen';
+  if (lwncCategory === 'Compulsion') {
+    showScreen('compulsionPronounScreen');
+  } else {
+    showScreen('lwncPronounScreen');
+  }
+}
+
 function buildLwncFormula(tense, type, category) {
+
+  // ── Compulsion ────────────────────────────────────────────
+  if (category === 'Compulsion') {
+    const compulsionNote =
+      '<p style="font-size:15px; color:#666; margin:8px auto 16px; max-width:400px; text-align:left;">' +
+      'Used when you need to do something, almost with a sense of reluctancy — ' +
+      'you don\'t want to do it, but you\'ll end up doing it.' +
+      '</p>';
+    const verbEndingsNote =
+      '<p style="font-size:14px; color:#888; margin:0 auto 12px; max-width:400px; text-align:left;">' +
+      'Verb endings: <b>-vo / -vi / -vu / -vā</b></p>';
+    const genderNote =
+      '<p style="font-size:15px; color:#666; margin:12px auto 4px; max-width:400px; text-align:left;">' +
+      'The gender of <b>paḍvānũ</b> agrees with the noun that follows the pronoun.' +
+      '</p>';
+    const compulsionFormulas = {
+      'Simple Present': `${compulsionNote}${verbEndingsNote}` +
+        `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; [noun] &nbsp;+&nbsp; verb(-vo/-vi/-vu/-vā) &nbsp;+&nbsp; paḍe che</b></p>` +
+        `<p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mār\u1ebd kh\u0101vu pa\u1e0de che. (I have to eat.)</i></p>`,
+      'Simple Future': `${compulsionNote}${verbEndingsNote}` +
+        `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; [noun] &nbsp;+&nbsp; verb(-vo/-vi/-vu/-vā) &nbsp;+&nbsp; paḍse</b></p>` +
+        `<p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mār\u1ebd kh\u0101vu pa\u1e0dse. (I will have to eat.)</i></p>`,
+      'Simple Past': `${compulsionNote}${verbEndingsNote}${genderNote}` +
+        `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; [noun] &nbsp;+&nbsp; verb(-vo/-vi/-vu/-vā) &nbsp;+&nbsp; paḍ(yo/ī/yā/yũ) &nbsp;+&nbsp; ha(to/tī/tā/tũ)</b></p>` +
+        `<p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mār\u1ebd kh\u0101vu pa\u1e0dy\u0169 hat\u0169. (I had to eat.)</i></p>`,
+      'Continuous Past': `${compulsionNote}${verbEndingsNote}${genderNote}` +
+        `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; [noun] &nbsp;+&nbsp; verb(-vo/-vi/-vu/-vā) &nbsp;+&nbsp; paḍ(to/tī/tā/tũ) &nbsp;+&nbsp; ha(to/tī/tā/tũ)</b></p>` +
+        `<p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mār\u1ebd kh\u0101vu pa\u1e0dt\u0169 hat\u0169. (I used to have to eat.)</i></p>`,
+    };
+    return compulsionFormulas[tense] || '<p>(Coming soon)</p>';
+  }
 
   // ── Needs ─────────────────────────────────────────────────
   if (category === 'Needs') {
@@ -1817,12 +1864,12 @@ function buildLwncFormula(tense, type, category) {
 
 <!-- Likes/Wants/Needs Screen -->
 <div id="lwncScreen" class="screen">
-  <h1>Likes/Wants/Needs</h1>
+  <h1>Desires / Compulsion</h1>
   <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
   <div class="card" id="lwncOutput"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
     <button onclick="lwncRender()">Next →</button>
-    <button id="lwncShowPronounsBtn" class="secondary-btn" onclick="previousScreen='lwncScreen'; showScreen('lwncPronounScreen')" style="display:none;">Show Pronouns Table</button>
+    <button id="lwncShowPronounsBtn" class="secondary-btn" onclick="lwncShowPronouns()" style="display:none;">Show Pronouns Table</button>
     <button id="lwncShowFormulaBtn" class="secondary-btn" onclick="previousScreen='lwncScreen'; showScreen('lwncFormulaScreen')" style="display:none;">Show Formula</button>
     <button id="lwncHintBtn" class="secondary-btn" onclick="lwncToggleHint()" style="display:none;">Show Hint</button>
   </div>
@@ -1832,6 +1879,32 @@ function buildLwncFormula(tense, type, category) {
 <div id="lwncFormulaScreen" class="screen">
   <h1 id="lwncFormulaTitle">Formula</h1>
   <div id="lwncFormulaContainer"></div>
+  <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
+</div>
+
+<!-- Compulsion Pronouns Screen -->
+<div id="compulsionPronounScreen" class="screen">
+  <h1>Pronouns (Compulsion)</h1>
+  <p style="font-size:16px; color:#555; margin: 16px auto 6px; max-width:400px; text-align:left;">Compulsion verbs always use these pronouns regardless of tense.</p>
+  <table class="pronoun-table">
+    <thead>
+      <tr>
+        <th>English</th>
+        <th>Romanized Gujarati</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>I</td><td>Mārẽ</td></tr>
+      <tr><td>You (informal)</td><td>Tārẽ</td></tr>
+      <tr><td>You (formal)</td><td>Tamārẽ</td></tr>
+      <tr><td>You all</td><td>Tamārẽ badhā'ne</td></tr>
+      <tr><td>He/She (informal)</td><td>ene</td></tr>
+      <tr><td>He/She (formal)</td><td>emne</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpaṇe</td></tr>
+      <tr><td>We (exclusive)</td><td>Amārẽ</td></tr>
+      <tr><td>They</td><td>E badhā'ne</td></tr>
+    </tbody>
+  </table>
   <button class="secondary-btn" onclick="goBack()" style="margin-top:20px;">← Back</button>
 </div>
 
