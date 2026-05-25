@@ -238,6 +238,50 @@
     .fc-filter-btn.active:hover {
       background: #6e6eff;
     }
+    /* ── Tense Filter List ───────────────────────── */
+    .tense-filter-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 auto 20px;
+      max-width: 380px;
+      width: 100%;
+      background: #1c1c1e;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #3a3a3c;
+    }
+    .tense-filter-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 18px;
+      border-bottom: 1px solid #2c2c2e;
+      cursor: pointer;
+      font-size: 16px;
+      user-select: none;
+      transition: background 0.12s;
+    }
+    .tense-filter-item:last-child { border-bottom: none; }
+    .tense-filter-item:hover { background: #2c2c2e; }
+    .tense-filter-item.active { color: #fff; }
+    .tense-filter-item:not(.active) { color: #6e6e73; }
+    .tfi-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #48484a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .tense-filter-item.active .tfi-check {
+      background: #5a5aff;
+      border-color: #5a5aff;
+      color: #fff;
+    }
     /* ── Vocab Screen ──────────────────────────────── */
     .vocab-search {
       width: 100%;
@@ -297,6 +341,11 @@
       color: var(--color-primary);
       font-weight: 600;
     }
+    .lock-active {
+      background-color: var(--color-border-light) !important;
+      color: var(--color-primary) !important;
+      font-weight: bold !important;
+    }
   </style>
 </head>
 <body class="home">
@@ -311,6 +360,14 @@
     <button onclick="showScreen('flashcardsScreen'); initFlashcards();">Flash Cards</button>
     <button onclick="showScreen('vocabScreen'); initVocab();">Vocabulary List</button>
   </div>
+</div>
+
+<!-- Tense Filter Screen -->
+<div id="tenseFilterScreen" class="screen">
+  <h1>Tense Filter</h1>
+  <p style="margin:0 0 4px;"><a href="#" onclick="closeTenseFilter(); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Back</a></p>
+  <p style="font-size:15px; color:#888; margin:10px auto 16px; max-width:380px; text-align:center;">Tap a tense to enable or disable it for this mode. At least one must stay active.</p>
+  <ul class="tense-filter-list" id="tenseFilterBtns"></ul>
 </div>
 
 <div id="mainScreen" class="screen">
@@ -547,6 +604,79 @@ const persons = [
 
 // const tenses = ["Simple Past", "Simple Present", "Simple Future", "Continuous Past", "Continuous Present", "Continuous Future", "Perfect Past", "Perfect Present", "Perfect Future", "Imperfect Past", "Imperfect Present", "Imperfect Future"]; // Full list — Imperfect Past & Imperfect Future deactivated below
 const tenses = ["Simple Past", "Simple Present", "Simple Future", "Continuous Past", "Continuous Present", "Continuous Future", "Perfect Past", "Perfect Present", "Perfect Future", "Imperfect Present"];
+
+// ── Per-Mode Tense Filters ────────────────────────────────
+const _lwncFilterTenses    = ['Simple Present', 'Simple Past', 'Simple Future', 'Continuous Past'];
+const _combinedFilterTenses = ['Simple Present', 'Simple Past', 'Simple Future', 'Continuous Past',
+                               'Continuous Present', 'Continuous Future', 'Perfect Past', 'Perfect Present', 'Perfect Future'];
+const modeFilterOptions = {
+  vc:       tenses,
+  lwnc:     _lwncFilterTenses,
+  combined: _combinedFilterTenses,
+  rp:       tenses,
+};
+const modeActiveTenseSets = {
+  vc:       new Set(tenses),
+  lwnc:     new Set(_lwncFilterTenses),
+  combined: new Set(_combinedFilterTenses),
+  rp:       new Set(tenses),
+};
+let _filterMode        = '';
+let _filterReturnScreen = '';
+
+function randomTense(arr, activeSet) {
+  if (!activeSet) return random(arr);
+  const filtered = arr.filter(t => activeSet.has(t));
+  return random(filtered.length ? filtered : [...activeSet]);
+}
+
+function openTenseFilter(mode, returnScreen) {
+  _filterMode        = mode;
+  _filterReturnScreen = returnScreen;
+  initTenseFilter();
+  showScreen('tenseFilterScreen');
+}
+
+function closeTenseFilter() {
+  updateModeFilterBtn(_filterMode);
+  showScreen(_filterReturnScreen);
+}
+
+function updateModeFilterBtn(mode) {
+  const btn = document.getElementById(mode + 'FilterBtn');
+  if (!btn) return;
+  const activeSet = modeActiveTenseSets[mode];
+  const total     = modeFilterOptions[mode].length;
+  btn.textContent = activeSet.size < total
+    ? 'Tense Filter (' + activeSet.size + '/' + total + ')'
+    : 'Tense Filter';
+}
+
+function initTenseFilter() {
+  const options   = modeFilterOptions[_filterMode] || tenses;
+  const activeSet = modeActiveTenseSets[_filterMode];
+  const container = document.getElementById('tenseFilterBtns');
+  container.innerHTML = '';
+  options.forEach(tense => {
+    const li = document.createElement('li');
+    const isActive = activeSet.has(tense);
+    li.className = 'tense-filter-item' + (isActive ? ' active' : '');
+    li.innerHTML = '<span>' + tense + '</span><span class="tfi-check">' + (isActive ? '&#10003;' : '') + '</span>';
+    li.onclick = () => {
+      if (activeSet.has(tense)) {
+        if (activeSet.size === 1) return; // keep at least one
+        activeSet.delete(tense);
+        li.classList.remove('active');
+        li.querySelector('.tfi-check').innerHTML = '';
+      } else {
+        activeSet.add(tense);
+        li.classList.add('active');
+        li.querySelector('.tfi-check').innerHTML = '&#10003;';
+      }
+    };
+    container.appendChild(li);
+  });
+}
 
 const tenseSamples = {
   'Simple Past':        'e.g. "I ate food." or "I walked."',
@@ -927,7 +1057,7 @@ function rpRender() {
   rp_showingHint = false;
 
   if (rp_mode === 'verbTense') {
-    rp_tense = random(tenses);
+    rp_tense = randomTense(tenses, modeActiveTenseSets.rp);
     rp_verb  = random(verbs);
   } else if (rp_mode === 'lwnc') {
     rp_category  = random(['Likes', 'Wants', 'Needs', 'Compulsion']);
@@ -935,7 +1065,7 @@ function rpRender() {
                        : rp_category === 'Wants'      ? lwncWantsTenses
                        : rp_category === 'Compulsion' ? lwncCompulsionTenses
                        : lwncNeedsTenses;
-    rp_tense      = random(tensesForCat);
+    rp_tense      = randomTense(tensesForCat, modeActiveTenseSets.rp);
     rp_objectType = (rp_category === 'Compulsion' || Math.random() < 0.5) ? 'verb' : 'noun';
     if (rp_objectType === 'verb') {
       rp_object = random(verbs);
@@ -945,10 +1075,10 @@ function rpRender() {
     }
     rp_verb = rp_objectType === 'verb' ? rp_object : null;
   } else if (rp_mode === 'cans') {
-    rp_tense = random(cansTenses);
+    rp_tense = randomTense(cansTenses, modeActiveTenseSets.rp);
     rp_verb  = random(verbs);
   } else if (rp_mode === 'whatifs') {
-    rp_tense = random(whatIfsTenses);
+    rp_tense = randomTense(whatIfsTenses, modeActiveTenseSets.rp);
     rp_verb  = random(verbs);
   } else { // vocab
     rp_object     = random(flashcards);
@@ -1097,7 +1227,7 @@ function rpShowFormula() {
 function generate() {
   const verb = random(verbs);
   const person = random(persons);
-  const tense = random(tenses);
+  const tense = randomTense(tenses);
 
   currentVerb = verb;
   currentPerson = person;
@@ -1170,7 +1300,7 @@ function cansRender() {
     return;
   }
 
-  cansTense  = random(cansTenses);
+  cansTense  = randomTense(cansTenses, modeActiveTenseSets.combined);
   cansPerson = random(persons);
   cansVerb   = cansDeck[cansIndex];
 
@@ -1285,7 +1415,7 @@ function whatIfsRender() {
     return;
   }
 
-  whatIfsTense  = random(whatIfsTenses);
+  whatIfsTense  = randomTense(whatIfsTenses, modeActiveTenseSets.combined);
   whatIfsPerson = random(persons);
   whatIfsVerb   = whatIfsDeck[whatIfsIndex];
 
@@ -1411,7 +1541,7 @@ function combinedRender() {
   combinedMode   = Math.random() < 0.5 ? 'cans' : 'whatifs';
   combinedVerb   = combinedDeck[combinedIndex];
   combinedPerson = random(persons);
-  combinedTense  = combinedMode === 'cans' ? random(cansTenses) : random(whatIfsTenses);
+  combinedTense  = combinedMode === 'cans' ? randomTense(cansTenses, modeActiveTenseSets.combined) : randomTense(whatIfsTenses, modeActiveTenseSets.combined);
 
   const tenseSchemes = {
     'Simple Present':     { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
@@ -1531,28 +1661,35 @@ let vcTense = '';
 let vcPerson = '';
 let vcObject = '';
 let vcShowingHint = false;
+let vcVerbLocked  = false;
 
 function startVerbCycle() {
-  // Shuffle a copy of all verbs
   vcDeck = [...verbs].sort(() => Math.random() - 0.5);
   vcIndex = 0;
+  vcVerbLocked = false;
   showScreen('verbCycleScreen');
+  // Reset lock button appearance
+  const lbv = document.getElementById('vcLockVerbBtn');
+  if (lbv) { lbv.textContent = 'Lock Verb'; lbv.classList.remove('lock-active'); }
+  const nb = document.getElementById('vcNextBtn');
+  if (nb) nb.textContent = 'Next Verb →';
   vcRender();
 }
 
 function vcRender() {
-  if (vcIndex >= vcDeck.length) {
-    document.getElementById('vcOutput').innerHTML =
-      '<b>All ' + vcDeck.length + ' verbs done!</b><br><br>Press "Next Verb" to shuffle and restart.';
-    document.getElementById('vcProgress').textContent = vcDeck.length + ' / ' + vcDeck.length;
-    document.getElementById('vcShowPronounsBtn').style.display = 'none';
-    document.getElementById('vcShowConjugationsBtn').style.display = 'none';
-    document.getElementById('vcHintBtn').style.display = 'none';
-    return;
+  if (!vcVerbLocked) {
+    if (vcIndex >= vcDeck.length) {
+      document.getElementById('vcOutput').innerHTML =
+        '<b>All ' + vcDeck.length + ' verbs done!</b><br><br>Press "Next Verb" to shuffle and restart.';
+      document.getElementById('vcProgress').textContent = vcDeck.length + ' / ' + vcDeck.length;
+      document.getElementById('vcShowPronounsBtn').style.display = 'none';
+      document.getElementById('vcShowConjugationsBtn').style.display = 'none';
+      document.getElementById('vcHintBtn').style.display = 'none';
+      return;
+    }
+    vcVerb = vcDeck[vcIndex];
   }
-
-  vcVerb   = vcDeck[vcIndex];
-  vcTense  = random(tenses);
+  vcTense = randomTense(tenses, modeActiveTenseSets.vc);
   vcPerson = random(persons);
   vcObject = (vcVerb.objects && vcVerb.objects.length > 0 && Math.random() < 0.5) ? random(vcVerb.objects) : '';
   vcShowingHint = false;
@@ -1583,7 +1720,9 @@ function vcRender() {
   root.style.setProperty('--color-secondary-hover', scheme.secondaryHover);
   root.style.setProperty('--color-shadow', scheme.shadow);
 
-  document.getElementById('vcProgress').textContent = (vcIndex + 1) + ' / ' + vcDeck.length;
+  document.getElementById('vcProgress').textContent = vcVerbLocked
+    ? '(verb locked) — ' + vcVerb.en
+    : (vcIndex + 1) + ' / ' + vcDeck.length;
 
   const vcTenseSampleEl = document.getElementById('vcTenseSample');
   vcTenseSampleEl.textContent = tenseSamples[vcTense] || '';
@@ -1627,14 +1766,23 @@ function vcShowPronouns() {
 }
 
 function vcNext() {
-  if (vcIndex >= vcDeck.length) {
-    // Restart with a new shuffle
-    vcDeck = [...verbs].sort(() => Math.random() - 0.5);
-    vcIndex = 0;
-  } else {
-    vcIndex++;
+  if (!vcVerbLocked) {
+    if (vcIndex >= vcDeck.length) {
+      vcDeck = [...verbs].sort(() => Math.random() - 0.5);
+      vcIndex = 0;
+    } else {
+      vcIndex++;
+    }
   }
   vcRender();
+}
+
+function vcToggleVerbLock() {
+  vcVerbLocked = !vcVerbLocked;
+  const btn = document.getElementById('vcLockVerbBtn');
+  btn.textContent = vcVerbLocked ? 'Unlock Verb' : 'Lock Verb';
+  btn.classList.toggle('lock-active', vcVerbLocked);
+  document.getElementById('vcNextBtn').textContent = vcVerbLocked ? 'Next Tense →' : 'Next Verb →';
 }
 
 // ── Likes/Wants/Needs/Compulsion/Can's ──────────────────────────
@@ -1668,7 +1816,7 @@ function lwncRender() {
                           : lwncCategory === 'Wants'      ? lwncWantsTenses
                           : lwncCategory === 'Compulsion' ? lwncCompulsionTenses
                           : lwncNeedsTenses;
-  lwncTense  = random(tensesForCategory);
+  lwncTense  = randomTense(tensesForCategory, modeActiveTenseSets.lwnc);
   lwncPerson = random(persons);
 
   // Compulsion only uses verbs; others randomly pick verb or noun
@@ -1855,7 +2003,9 @@ function buildLwncFormula(tense, type, category) {
   <p id="vcTenseSample" style="display:none; font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:center; font-style:italic;"></p>
   <div class="card" id="vcOutput"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-    <button onclick="vcNext()">Next Verb →</button>
+    <button id="vcNextBtn" onclick="vcNext()">Next Verb →</button>
+    <button id="vcLockVerbBtn" class="secondary-btn" onclick="vcToggleVerbLock()">Lock Verb</button>
+    <button id="vcFilterBtn" class="secondary-btn" onclick="openTenseFilter('vc', 'verbCycleScreen')">Tense Filter</button>
     <button id="vcShowPronounsBtn" class="secondary-btn" onclick="vcShowPronouns()" style="display:none;">Show Pronouns Table</button>
     <button id="vcShowConjugationsBtn" class="secondary-btn" onclick="previousScreen='verbCycleScreen'; showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
     <button id="vcHintBtn" class="secondary-btn" onclick="vcToggleHint()" style="display:none;">Show Verb Hint</button>
@@ -1869,6 +2019,7 @@ function buildLwncFormula(tense, type, category) {
   <div class="card" id="lwncOutput"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
     <button onclick="lwncRender()">Next →</button>
+    <button id="lwncFilterBtn" class="secondary-btn" onclick="openTenseFilter('lwnc', 'lwncScreen')">Tense Filter</button>
     <button id="lwncShowPronounsBtn" class="secondary-btn" onclick="lwncShowPronouns()" style="display:none;">Show Pronouns Table</button>
     <button id="lwncShowFormulaBtn" class="secondary-btn" onclick="previousScreen='lwncScreen'; showScreen('lwncFormulaScreen')" style="display:none;">Show Formula</button>
     <button id="lwncHintBtn" class="secondary-btn" onclick="lwncToggleHint()" style="display:none;">Show Hint</button>
@@ -2008,6 +2159,7 @@ function buildLwncFormula(tense, type, category) {
   <div class="card" id="combinedOutput"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
     <button onclick="combinedNext()">Next →</button>
+    <button id="combinedFilterBtn" class="secondary-btn" onclick="openTenseFilter('combined', 'combinedScreen')">Tense Filter</button>
     <button id="combinedShowPronounsBtn" class="secondary-btn" onclick="combinedShowPronouns()" style="display:none;">Show Pronouns Table</button>
     <button id="combinedShowConjugationsBtn" class="secondary-btn" onclick="previousScreen='combinedScreen'; showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
     <button id="combinedShowFormulaBtn" class="secondary-btn" onclick="previousScreen='combinedScreen'; showScreen('cansFormulaScreen')" style="display:none;">Show Formula</button>
@@ -2023,6 +2175,7 @@ function buildLwncFormula(tense, type, category) {
   <div class="card" id="rpOutput"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
     <button onclick="rpRender()">Next →</button>
+    <button id="rpFilterBtn" class="secondary-btn" onclick="openTenseFilter('rp', 'randomScreen')">Tense Filter</button>
     <button id="rpShowPronounsBtn" class="secondary-btn" onclick="rpShowPronouns()" style="display:none;">Show Pronouns Table</button>
     <button id="rpShowConjugationsBtn" class="secondary-btn" onclick="previousScreen='randomScreen'; showScreen('conjugationsScreen')" style="display:none;">Example Conjugations</button>
     <button id="rpShowFormulaBtn" class="secondary-btn" onclick="rpShowFormula()" style="display:none;">Show Formula</button>
