@@ -447,8 +447,8 @@
       <tr><td>You all</td><td>Tame badhā'e</td></tr>
       <tr><td>He/She (informal)</td><td>eṇe</td></tr>
       <tr><td>He/She (formal)</td><td>emṇe</td></tr>
-      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
       <tr><td>We (exclusive)</td><td>Ame</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
       <tr><td>They</td><td>E badhā'e</td></tr>
     </tbody>
   </table>
@@ -500,8 +500,8 @@
       <tr><td>You all</td><td>Tamāre badhā'ne</td></tr>
       <tr><td>He/She (informal)</td><td>ene</td></tr>
       <tr><td>He/She (formal)</td><td>emne</td></tr>
-      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
       <tr><td>We (exclusive)</td><td>Amāre</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpḍe</td></tr>
       <tr><td>They</td><td>E badhā'ne</td></tr>
     </tbody>
   </table>
@@ -597,8 +597,8 @@ const persons = [
   "He (formal)",
   "She (informal)",
   "She (formal)",
-  "We (inclusive)",
   "We (exclusive)",
+  "We (inclusive)",
   "They"
 ];
 
@@ -1098,6 +1098,7 @@ function rpRender() {
     'Perfect Past':       { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
     'Perfect Present':    { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
     'Perfect Future':     { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Imperfect Present':  { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
   };
   const scheme = tenseSchemes[rp_tense] || tenseSchemes['Simple Past'];
   const root = document.documentElement;
@@ -1362,7 +1363,7 @@ function buildCansFormula(tense) {
     'Simple Present': `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(ũ/e/o/ie) &nbsp;+&nbsp; che/cho/che/chie</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ khāi sakũ chũ. (I can eat.)</i></p>`,
     'Simple Future':  `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(is/so/se/isu)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ kari sakis. (I will be able to do.)</i></p>`,
     'Simple Past':    `<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(yo/i/yũ/yā) &nbsp;+&nbsp; hot</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Me kari sakyũ hot. (I was able to do.)</i></p>`,
-    'Continuous Past':`<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(to/ti/tũ/tā) &nbsp;+&nbsp; ha(to/ti/tũ/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ kari sakto hato. (I used to be able to do.)</i></p>`,
+    'Continuous Past':`<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-i form) &nbsp;+&nbsp; sak(to/ti/tũ/tā) &nbsp;+&nbsp; ha(to/ti/tũ/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Hũ kari saktu hatu. (I used to be able to do.)</i></p>`,
   };
   return formulas[tense] || '<p>(Coming soon)</p>';
 }
@@ -1429,6 +1430,7 @@ function whatIfsRender() {
     'Perfect Past':    { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
     'Perfect Present': { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
     'Perfect Future':  { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Imperfect Present': { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
   };
   const scheme = tenseSchemes[whatIfsTense] || tenseSchemes['Simple Past'];
   const root = document.documentElement;
@@ -1553,6 +1555,7 @@ function combinedRender() {
     'Perfect Past':       { bg: '#f0f4ff', primary: '#4a3f8f', hover: '#6b5ebd', border: '#c5b8f5', borderLight: '#e0d9ff', tableEven: '#f7f4ff', secondaryHover: '#ede9ff', shadow: 'rgba(74, 63, 143, 0.15)' },
     'Perfect Present':    { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
     'Perfect Future':     { bg: '#fff7ed', primary: '#c2410c', hover: '#ea580c', border: '#fdba74', borderLight: '#fed7aa', tableEven: '#fff7ed', secondaryHover: '#ffedd5', shadow: 'rgba(194, 65, 12, 0.15)' },
+    'Imperfect Present':  { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
   };
   const scheme = tenseSchemes[combinedTense] || tenseSchemes['Simple Past'];
   const root = document.documentElement;
@@ -2051,8 +2054,8 @@ function buildLwncFormula(tense, type, category) {
       <tr><td>You all</td><td>Tamārẽ badhā'ne</td></tr>
       <tr><td>He/She (informal)</td><td>ene</td></tr>
       <tr><td>He/She (formal)</td><td>emne</td></tr>
-      <tr><td>We (inclusive)</td><td>Āpaṇe</td></tr>
       <tr><td>We (exclusive)</td><td>Amārẽ</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpaṇe</td></tr>
       <tr><td>They</td><td>E badhā'ne</td></tr>
     </tbody>
   </table>
@@ -2077,8 +2080,8 @@ function buildLwncFormula(tense, type, category) {
       <tr><td>You all</td><td>Tamne badhā'ne</td></tr>
       <tr><td>He/She (informal)</td><td>ene</td></tr>
       <tr><td>He/She (formal)</td><td>emne</td></tr>
-      <tr><td>We (inclusive)</td><td>Āpaṇe</td></tr>
       <tr><td>We (exclusive)</td><td>Amne</td></tr>
+      <tr><td>We (inclusive)</td><td>Āpaṇe</td></tr>
       <tr><td>They</td><td>E badhā'ne</td></tr>
     </tbody>
   </table>
