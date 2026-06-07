@@ -1800,6 +1800,8 @@ let lwncCategory   = '';  // 'Likes' / 'Wants' / 'Needs' / 'Compulsion'
 let lwncObjectType  = '';  // 'verb' or 'noun'
 let lwncObject      = null;
 let lwncShowingHint = false;
+let lwncDeck        = [];
+let lwncIndex       = 0;
 
 const lwncTenseSchemes = {
   'Simple Present':  { bg: '#f0fff4', primary: '#276749', hover: '#38a169', border: '#9ae6b4', borderLight: '#c6f6d5', tableEven: '#f0fff4', secondaryHover: '#c6f6d5', shadow: 'rgba(39, 103, 73, 0.15)' },
@@ -1809,11 +1811,22 @@ const lwncTenseSchemes = {
 };
 
 function startLWNC() {
+  lwncDeck = [...verbs].sort(() => Math.random() - 0.5);
+  lwncIndex = 0;
   showScreen('lwncScreen');
   lwncRender();
 }
 
 function lwncRender() {
+  if (lwncIndex >= lwncDeck.length) {
+    document.getElementById('lwncOutput').innerHTML = '<b>All ' + lwncDeck.length + ' verbs done!</b><br><br>Press "Next →" to shuffle and restart.';
+    document.getElementById('lwncProgress').textContent = lwncDeck.length + ' / ' + lwncDeck.length;
+    document.getElementById('lwncShowPronounsBtn').style.display = 'none';
+    document.getElementById('lwncShowFormulaBtn').style.display = 'none';
+    document.getElementById('lwncHintBtn').style.display = 'none';
+    return;
+  }
+
   lwncCategory = random(['Likes', 'Wants', 'Needs', 'Compulsion']);
   const tensesForCategory = lwncCategory === 'Likes'      ? lwncLikesTenses
                           : lwncCategory === 'Wants'      ? lwncWantsTenses
@@ -1825,11 +1838,13 @@ function lwncRender() {
   // Compulsion only uses verbs; others randomly pick verb or noun
   lwncObjectType = (lwncCategory === 'Compulsion' || Math.random() < 0.5) ? 'verb' : 'noun';
   if (lwncObjectType === 'verb') {
-    lwncObject = random(verbs);
+    lwncObject = lwncDeck[lwncIndex];
   } else {
     const nouns = flashcards.filter(c => c.category === 'Noun');
-    lwncObject = random(nouns);
+    lwncObject = random(nouns.length ? nouns : verbs);
   }
+
+  document.getElementById('lwncProgress').textContent = (lwncIndex + 1) + ' / ' + lwncDeck.length;
 
   const scheme = lwncTenseSchemes[lwncTense] || lwncTenseSchemes['Simple Past'];
   const root = document.documentElement;
@@ -1860,6 +1875,16 @@ function lwncRender() {
   formulaBtn.style.display = '';
   document.getElementById('lwncFormulaTitle').textContent = lwncTense + ' ' + lwncCategory + ' Formula';
   document.getElementById('lwncFormulaContainer').innerHTML = buildLwncFormula(lwncTense, lwncObjectType, lwncCategory);
+}
+
+function lwncNext() {
+  if (lwncIndex >= lwncDeck.length) {
+    lwncDeck = [...verbs].sort(() => Math.random() - 0.5);
+    lwncIndex = 0;
+  } else {
+    lwncIndex++;
+  }
+  lwncRender();
 }
 
 function lwncRenderOutput(showHint) {
@@ -1961,9 +1986,9 @@ function buildLwncFormula(tense, type, category) {
       '<p style="font-size:15px; color:#666; margin:8px auto 4px; max-width:400px; text-align:left;">Gender of the <b>want</b> verb agrees with the object verb form.</p>' +
       '<p style="font-size:14px; color:#888; margin:0 auto 16px; max-width:400px; text-align:left;">Verb endings: <b>-vu/-vo/-vi /-vā</b></p>';
     const wantsVerbFormulas = {
-      'Simple Present':  `${verbNote}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-vu/vo/vi/vā) &nbsp;+&nbsp; che &nbsp;+&nbsp; che</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane khāvu joie che. (I want to eat.)</i></p>`,
-      'Simple Future':   `${verbNote}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-vu/vo/vi/vā) &nbsp;+&nbsp; hase &nbsp;+&nbsp; hase</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane khāvu joi hase. (I will want to eat.)</i></p>`,
-      'Simple Past':     `${verbNote}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-vu/vo/vi/vā) &nbsp;+&nbsp; ha(tũ/ti/to/tā) + ha(to/ti/tũ/tā)&nbsp;+&nbsp; ha(tũ/ti/to/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane khāvu joitũ hatũ. (I wanted to eat.)</i></p>`,
+      'Simple Present':  `${verbNote}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-vu/vo/vi/vā) &nbsp;+&nbsp; che &nbsp;+&nbsp; che</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane khāvu che. (I want to eat.)</i></p>`,
+      'Simple Future':   `${verbNote}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-vu/vo/vi/vā) &nbsp;+&nbsp; hase &nbsp;+&nbsp; hase</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane khāvu hase. (I will want to eat.)</i></p>`,
+      'Simple Past':     `${verbNote}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; verb(-vu/vo/vi/vā) &nbsp;+&nbsp; ha(tũ/ti/to/tā)&nbsp;+&nbsp; ha(tũ/ti/to/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane khāvu hatũ. (I wanted to eat.)</i></p>`,
       'Continuous Past': `<p>(Coming soon)</p>`,
     };
     return wantsVerbFormulas[tense] || '<p>(Coming soon)</p>';
@@ -1977,7 +2002,7 @@ function buildLwncFormula(tense, type, category) {
     const nounFormulas = {
       'Simple Present':  `${note}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; noun &nbsp;+&nbsp; game che</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane gāḍi game che. (I like the car)</i></p>${noteBottom}`,
       'Simple Future':   `${note}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; noun &nbsp;+&nbsp; gamse</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane gāḍi gamse. (I will like the car)</i></p>${noteBottom}`,
-      'Simple Past':     `${note}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; noun &nbsp;+&nbsp; gam(yo/i/yũ/yā) + ha(to/ti/tũ/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane gāḍi gami. (I liked the car)</i></p>${noteBottom}`,
+      'Simple Past':     `${note}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; noun &nbsp;+&nbsp; gam(yo/i/yũ/yā) + ha(to/ti/tũ/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane gāḍi gami hati. (I liked the car)</i></p>${noteBottom}`,
       'Continuous Past': `${note}<p style="font-size:20px; margin:12px auto; max-width:400px; text-align:left;"><b>Pronoun &nbsp;+&nbsp; noun &nbsp;+&nbsp; gam(to/ti/tũ/tā) &nbsp;+&nbsp; ha(to/ti/tũ/tā)</b></p><p style="font-size:14px; color:#888; margin:8px auto 0; max-width:400px; text-align:left;"><i>e.g. Mane gāḍi gamti hati. (I used to like the car)</i></p>${noteBottom}`,
     };
     return nounFormulas[tense] || '<p>(Coming soon)</p>';
@@ -2019,9 +2044,10 @@ function buildLwncFormula(tense, type, category) {
 <div id="lwncScreen" class="screen">
   <h1>Desires / Compulsion</h1>
   <p style="margin:0 0 4px;"><a href="#" onclick="showScreen('homeScreen'); return false;" style="font-size:15px; color:var(--color-primary); text-decoration:none;">← Home</a></p>
+  <p class="fc-progress" id="lwncProgress" style="color:var(--color-primary); font-size:16px; margin:6px 0 0;"></p>
   <div class="card" id="lwncOutput"></div>
   <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-    <button onclick="lwncRender()">Next →</button>
+    <button onclick="lwncNext()">Next →</button>
     <button id="lwncFilterBtn" class="secondary-btn" onclick="openTenseFilter('lwnc', 'lwncScreen')">Tense Filter</button>
     <button id="lwncShowPronounsBtn" class="secondary-btn" onclick="lwncShowPronouns()" style="display:none;">Show Pronouns Table</button>
     <button id="lwncShowFormulaBtn" class="secondary-btn" onclick="previousScreen='lwncScreen'; showScreen('lwncFormulaScreen')" style="display:none;">Show Formula</button>
